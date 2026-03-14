@@ -1,24 +1,25 @@
-"use client"
+"use client";
 import { login } from "@/app/services/authServices";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Page() {
-  const [email, setEmail] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const router = useRouter();
 
-  const handleSubmitLogin = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmitLogin = async (
+    e: React.SyntheticEvent<HTMLFormElement>,
+  ) => {
     try {
       e.preventDefault();
       await login(email, password);
-      router.replace("/page/dashboard")
+      router.replace("/page/dashboard");
     } catch (err: any) {
-      alert(err.message)
+      alert(err.message);
     }
-  }
-
+  };
 
   const form = [
     {

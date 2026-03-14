@@ -2,8 +2,9 @@
 
 @theme {
   --color-accent: var(--accent);
-  --color-main: var(--foreground);
-  --color-submain: color-mix(in srgb, var(--foreground) 70%, transparent);
+  --color-main: var(--background);
+  --color-forground: var(--foreground);
+  --color-subforground: color-mix(in srgb, var(--foreground) 50%, transparent);
 }
 
 :root {
@@ -21,7 +22,7 @@
 }
 
 @utility container-shadow {
-  @apply shadow-2xl shadow-gray-950;
+  @apply shadow-lg ring-2 ring-gray-200;
 }
 
 body {

@@ -1,5 +1,6 @@
 import useProfile from "@/app/hooks/useProfile";
 import { User2 } from "lucide-react";
+import { Sections } from "./components/sections";
 
 export default function Account() {
     const { username } = useProfile();
@@ -9,15 +10,15 @@ export default function Account() {
             <div className="container-parent">
                 {/* header */}
                 <div className="bg-accent">
-                    <div className="mt-5 py-5 px-7 flex items-center gap-2">
+                    <div className="mt-5 py-5 px-7 flex items-center gap-5 text-main">
                         <div className="bg-white rounded-full p-5">
                             <User2 className="text-accent" size={50} />
                         </div>
                         <span className="text-lg font-semibold">{username}</span>
                     </div>
                 </div>
-                <div className="container-child flex-1">
-                    <div>hi</div>
+                <div className="container-parent bg-gray-500/10">
+                    <Sections />
                 </div>
             </div>
         </>
