@@ -55,12 +55,14 @@ const login = async (req, res) => {
 
         const token = jwt.sign({ username: data.username, email: data.email }, process.env.JWT_SECRET, { expiresIn: "1h" })
 
+        const isProduction = process.env.NODE_ENV === "production";
+
         res.cookie("access_token", token, {
             httpOnly: true,
-            secure: true,
-            sameSite: "strict",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge: 3600000
-        })
+        });
         console.log(token);
         return res.status(200).json({
             message: "Success Login",
@@ -76,11 +78,12 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
+        const isProduction = process.env.NODE_ENV === "production";
         res.clearCookie("access_token", {
             httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-        })
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+        });
         return res.status(200).json({ message: "Success Logout" })
     } catch (err) {
         return res.status(500).json({ error: err.message })
