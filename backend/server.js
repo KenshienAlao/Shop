@@ -5,10 +5,18 @@ const cookieParser = require("cookie-parser")
 
 const app = express();
 
+const allowedOrigins = [
+    "http://localhost:3000",
+    process.env.FRONTEND_URL,
+    /\.vercel\.app$/
+].filter(Boolean);
+
 app.use(cors({
-    origin: [process.env.FRONTEND_URL, "http://localhost:3000", /\.vercel\.app$/],
+    origin: allowedOrigins,
     credentials: true
 }));
+
+
 app.use(cookieParser())
 app.use(express.json());
 
@@ -16,7 +24,7 @@ app.use("/api/auth", require("./routes/auth.routes"))
 app.use("/api/client", require("./routes/client.routes"))
 
 const PORT = process.env.PORT || 8080;
-
+     
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server is running on port ${PORT}`);
 });

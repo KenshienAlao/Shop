@@ -2,12 +2,12 @@ import { Home, ShoppingBag, ShoppingCart, User2 } from "lucide-react";
 import { memo } from "react";
 
 interface NavbarProps {
-    activeTab: (tab: string) => void
+    isActive: string;
+    setIsActive: (tab: string) => void;
 }
 
-function Navbar({ activeTab }: NavbarProps) {
-
-    console.log("navbar rendered")
+function Navbar({ isActive, setIsActive }: NavbarProps) {
+    console.log("navbar rendered");
 
     const tab = [
         {
@@ -25,29 +25,27 @@ function Navbar({ activeTab }: NavbarProps) {
         {
             name: "Me",
             icon: User2,
-        }
+        },
     ];
 
     return (
-        <>
-            <nav className="sticky border">
-                <div className="flex justify-around py-5">
-                    {tab.map((item) => {
-                        const Icon = item.icon
-
-
-                        return (
-                            <button key={item.name}
-                                onClick={() => activeTab(item.name)}
-                                className="flex flex-col items-center hover:opacity-50 ">
-                                <Icon className="w-full text-center" />
-                                <p className="w-full text-center">{item.name}</p>
-                            </button>
-                        );
-                    })}
-                </div>
-            </nav>
-        </>
+        <nav className="container-shadow sticky">
+            <div className="flex justify-around py-3">
+                {tab.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                        <button
+                            key={item.name}
+                            onClick={() => setIsActive(item.name)}
+                            className={`flex flex-col items-center gap-1 active:opacity-50 ${isActive === item.name ? "text-accent" : "text-submain"}`}
+                        >
+                            <Icon className="w-full text-center" />
+                            <p className="w-full text-center">{item.name}</p>
+                        </button>
+                    );
+                })}
+            </div>
+        </nav>
     );
 }
-export default memo(Navbar)
+export default memo(Navbar);

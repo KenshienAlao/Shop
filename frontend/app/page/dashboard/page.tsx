@@ -13,16 +13,18 @@ export default function Dashboard() {
     const [isActive, setIsActive] = useState<string>("Home");
 
     return (
-        <LazyWrapper>
-            <main>
-                {isActive === "Home" && <Home />}
-                {isActive === "Mall" && <Mall />}
-                {isActive === "Cart" && <Cart />}
-                {isActive === "Me" && <Account />}
 
-            </main>
-            <Navbar activeTab={setIsActive} />
-        </LazyWrapper>
+        <div className="h-dvh flex flex-col relative">
+            <LazyWrapper>
+                <main className="flex-1">
+                    {isActive === "Home" && <Home />}
+                    {isActive === "Mall" && <Mall />}
+                    {isActive === "Cart" && <Cart />}
+                    {isActive === "Me" && <Account />}
+                </main>
+                <Navbar isActive={isActive} setIsActive={setIsActive} />
+            </LazyWrapper>
+        </div>
     )
 }
 

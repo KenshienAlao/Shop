@@ -46,8 +46,7 @@ const login = async (req, res) => {
             .eq("email", email)
             .single()
 
-        console.log("test")
-        if (error) return res.status(400).json({ error: error.message })
+        if (error) return res.status(400).json({ error: "Email don't exist" })
 
         const isMatch = await bcrypt.compare(password, data.password)
 
@@ -58,7 +57,7 @@ const login = async (req, res) => {
 
         res.cookie("access_token", token, {
             httpOnly: true,
-            secure: true, // Set to true if using HTTPS
+            secure: true,
             sameSite: "strict",
             maxAge: 3600000
         })
