@@ -1,3 +1,4 @@
+"use client"
 import { Home, ShoppingBag, ShoppingCart, User2 } from "lucide-react";
 import { memo } from "react";
 

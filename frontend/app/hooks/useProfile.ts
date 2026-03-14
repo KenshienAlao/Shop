@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import { fetchProfile } from "@/app/services/profileServices";
 
