@@ -17,7 +17,6 @@ export async function register(
   const data = await res.json();
 
   if (!res.ok) {
-    alert(data.error);
     throw new Error(data.error);
   }
 
@@ -38,7 +37,6 @@ export async function login(email: string, password: string) {
   const data = await res.json();
 
   if (!res.ok) {
-    alert(data.error);
     throw new Error(data.error);
   }
 
