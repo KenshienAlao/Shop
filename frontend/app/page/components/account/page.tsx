@@ -1,3 +1,4 @@
+"use client"
 import useProfile from "@/app/hooks/useProfile";
 import { User2 } from "lucide-react";
 import { Sections } from "./components/sections";
