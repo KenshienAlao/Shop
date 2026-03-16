@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useState } from "react";
-import LazyWrapper from "@/app/auth/utils/lazywrapper";
+import LazyWrapper from "@/app/utils/lazywrapper";
 import Navbar from "@/app/page/components/navbar";
 import Home from "@/app/page/components/home";
 import Mall from "@/app/page/components/mall";
@@ -17,7 +17,7 @@ export default function Dashboard() {
         setIsActive(tab)
 
     }, [])
-    
+
     return (
 
         <div className="h-dvh flex flex-col relative">
@@ -33,6 +33,6 @@ export default function Dashboard() {
         </div>
     )
 
-  
+
 }
 
