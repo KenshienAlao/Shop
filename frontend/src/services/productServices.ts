@@ -2,6 +2,7 @@ interface ProductsProps {
   id: number;
   title: string;
   price: number;
+  discountPercentage: number;
   quantity: number;
 }
 
