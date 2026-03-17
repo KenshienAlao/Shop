@@ -1,4 +1,4 @@
-import { ChevronRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 const sections = [
@@ -31,7 +31,7 @@ export function Sections() {
               <div key={subItem.name}>
                 <Link href={subItem.href} className="flex justify-between px-5 py-5">
                   <h1 className="text-forground">{subItem.name}</h1>
-                  <ChevronRight className="text-subforground" />
+                  <ArrowLeft className="text-subforground" />
                 </Link>
                 <div className="h-px bg-gray-200" />
               </div>

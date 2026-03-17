@@ -2,8 +2,9 @@ const express = require("express")
 const router = express.Router()
 
 const clientController = require("../controllers/client.controller")
+const middleware = require("../middleware/auth.middleware")
 
-router.get("/profile", require("../middleware/auth.middleware"), (req, res) => {
+router.get("/profile", middleware, (req, res) => {
     res.json({ email: req.client.email, username: req.client.username })
 })
 

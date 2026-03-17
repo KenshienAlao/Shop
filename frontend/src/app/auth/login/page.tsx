@@ -1,5 +1,5 @@
 "use client";
-import { login } from "@/app/services/authServices";
+import { login } from "@/services/authServices";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -15,7 +15,7 @@ export default function Page() {
     try {
       e.preventDefault();
       await login(email, password);
-      router.replace("/page/dashboard");
+      router.replace("/dashboard");
     } catch (err: any) {
       alert(err.message);
     }

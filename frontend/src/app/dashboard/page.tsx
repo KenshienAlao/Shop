@@ -1,14 +1,12 @@
 "use client"
 
 import { useCallback, useState } from "react";
-import LazyWrapper from "@/app/utils/lazywrapper";
-import Navbar from "@/app/page/components/navbar";
-import Home from "@/app/page/components/home";
-import Mall from "@/app/page/components/mall";
-import Cart from "@/app/page/components/cart";
-import Account from "@/app/page/components/account/page";
-import { isatty } from "tty";
-
+import LazyWrapper from "@/utils/lazywrapper";
+import Navbar from "@/components/navbar";
+import Home from "@/components/home/HomeView";
+import Mall from "@/components/mall";
+import Cart from "@/components/cart";
+import Account from "@/components/account/AccountView";
 
 export default function Dashboard() {
     const [isActive, setIsActive] = useState<string>("Home");

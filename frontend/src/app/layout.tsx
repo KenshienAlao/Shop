@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ProfileProvider } from "./contexts/ProfileContext";
+import { ProfileProvider } from "@/contexts/ProfileContext";
 export const metadata: Metadata = {
   title: "Shop",
 };

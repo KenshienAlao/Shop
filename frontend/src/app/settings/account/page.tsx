@@ -1,6 +1,6 @@
 "use client";
-import { useProfileContext } from "@/app/contexts/ProfileContext";
-import { logout } from "@/app/services/authServices";
+import { useProfileContext } from "@/contexts/ProfileContext";
+import { logout } from "@/services/authServices";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -44,12 +44,12 @@ export default function Page() {
 
   return (
     <>
-      <div className="min-h-dvh bg-gray-500/10">
+      <div className="min-h-dvh bg-initial">
         <div className="container-parent bg-white">
           <div className="flex items-center gap-5 px-5 py-2">
             {/*header */}
             <div className="flex items-center gap-5">
-              <Link href="/page/dashboard">
+              <Link href="/dashboard">
                 <ArrowLeft className="text-accent" size={30} />
               </Link>
               <h1 className="text-foreground text-2xl"> Account & Security</h1>
@@ -71,7 +71,7 @@ export default function Page() {
                       <h1 className="text-forground">{subItem.label}</h1>
                       <h1 className="text-subforground">{subItem.info}</h1>
                     </div>
-                    <div className="h-px bg-gray-200" />
+                    <div className="h-px bg-initial" />
                   </div>
                 ))}
               </div>

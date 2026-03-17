@@ -1,7 +1,7 @@
 "use client"
 import { User2 } from "lucide-react";
 import { Sections } from "./components/sections";
-import { useProfileContext } from "@/app/contexts/ProfileContext";
+import { useProfileContext } from "@/contexts/ProfileContext";
 
 export default function Account() {
     const { username } = useProfileContext();

@@ -3,6 +3,7 @@
 @theme {
   --color-accent: var(--accent);
   --color-main: var(--background);
+  --color-initial: var(--initial);
   --color-forground: var(--foreground);
   --color-subforground: color-mix(in srgb, var(--foreground) 50%, transparent);
 }
@@ -10,7 +11,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --accent: oklch(64.6% 0.222 41.116);
+  --accent: #f54a00;
+  --initial: #e5e7eb;
 }
 
 @utility container-parent {
