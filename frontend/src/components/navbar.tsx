@@ -13,10 +13,6 @@ const tab = [
     icon: Home,
   },
   {
-    name: "Mall",
-    icon: ShoppingBag,
-  },
-  {
     name: "Cart",
     icon: ShoppingCart,
   },
@@ -29,17 +25,19 @@ const tab = [
 function Navbar({ isActive, setIsActive }: NavbarProps) {
   return (
     <nav className="container-shadow sticky bottom-0 z-50 bg-white">
-      <div className="flex justify-around py-3">
+      <div className="mx-auto flex w-full max-w-7xl justify-around py-3 md:py-4">
         {tab.map((item) => {
           const Icon = item.icon;
           return (
             <button
               key={item.name}
               onClick={() => setIsActive(item.name)}
-              className={`flex flex-col items-center gap-1 active:opacity-50 ${isActive === item.name ? "text-accent" : "text-subforground"}`}
+              className={`flex flex-col items-center gap-1 active:opacity-50 md:gap-1.5 ${isActive === item.name ? "text-accent" : "text-subforground"}`}
             >
-              <Icon className="w-full text-center" />
-              <p className="w-full text-center">{item.name}</p>
+              <Icon className="w-full text-center md:h-7 md:w-7" />
+              <p className="w-full text-center text-xs md:text-sm">
+                {item.name}
+              </p>
             </button>
           );
         })}

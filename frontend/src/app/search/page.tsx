@@ -4,11 +4,14 @@ import Searchbox from "@/components/searchbox";
 import { GetProduct } from "@/services/productServices";
 import { ArrowLeft, SearchIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { title } from "process";
 import { useEffect, useState } from "react";
 
 export default function SearchInitial() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState<any>("");
   const [products, setProducts] = useState<any[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,6 +30,15 @@ export default function SearchInitial() {
     item.title.toLowerCase().includes(query.toLowerCase()),
   );
 
+
+  const handleProductClickSuggested = (title: string) => {
+    router.push(`/product?q=${encodeURIComponent(title)}`);
+  };
+
+  const handleProductClickSearchButton = (title: string) => {
+    router.push(`/product?q=${encodeURIComponent(title)}`);
+  }
+
   return (
     <>
       <div className="container-parent min-h-dvh bg-gray-200">
@@ -36,9 +48,13 @@ export default function SearchInitial() {
           </Link>
           <div className="ring-accent flex flex-1 items-center justify-between gap-2 overflow-hidden rounded-lg ring">
             <Searchbox query={query} setQuery={setQuery} />
-            <div className="bg-accent flex h-10 w-15 items-center justify-center">
+
+
+            <button
+              onClick={() => handleProductClickSearchButton(query)}
+              className="bg-accent flex h-10 w-15 items-center justify-center">
               <SearchIcon className="text-white" />
-            </div>
+            </button>
           </div>
         </div>
 
@@ -49,13 +65,14 @@ export default function SearchInitial() {
                 filteredProduct.map((item: any, index: number) => (
                   <button
                     key={`${item.id}-${index}`}
-                    className="border-b border-gray-100 py-2 text-start text-gray-700 italic last:border-0"
+                    onClick={() => handleProductClickSuggested(item.title)}
+                    className="border-b border-gray-100 py-2 text-start text-gray-700 italic last:border-0 hover:bg-gray-50 transition-colors"
                   >
                     {item.title}
                   </button>
                 ))
               ) : (
-                <div>nothing</div>
+                null
               )}
             </div>
           )}

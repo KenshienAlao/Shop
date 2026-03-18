@@ -32,6 +32,7 @@ export default function Home() {
       setIsLoading(false);
     }, 800);
   }, [isLoading, hasMore, allProducts.length]);
+
   useEffect(() => {
     if (observerRef.current) observerRef.current.disconnect();
 
@@ -57,10 +58,10 @@ export default function Home() {
     <>
       <div className="flex w-full flex-col">
         <div className="bg-accent sticky top-0 z-50 flex">
-          <header className="flex w-full items-center justify-around px-2 py-3">
+          <header className="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-3 md:px-8">
             <Link
               href="/search"
-              className="bg-main flex w-90 items-center gap-2 rounded-lg p-3"
+              className="bg-main flex flex-1 max-w-xl items-center gap-2 rounded-lg p-3"
             >
               <Search className="text-subforground" />
               <span className="text-accent">Search</span>
@@ -70,8 +71,8 @@ export default function Home() {
             </button>
           </header>
         </div>
-        <div className="flex">
-          <div className="grid flex-1 grid-cols-2 gap-2 px-5 py-5">
+        <div className="flex justify-center">
+          <div className="grid w-full max-w-7xl flex-1 grid-cols-2 gap-2 px-4 py-5 sm:grid-cols-3 md:gap-4 md:px-8 lg:grid-cols-4 xl:grid-cols-5">
             {visibleProducts.map((item: any, index: number) => (
               <div
                 key={`${item.id}-${index}`}
@@ -84,20 +85,20 @@ export default function Home() {
                     className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
                   />
                   {item.discountPercentage > 0 && (
-                    <div className="bg-accent absolute right-0 top-2 px-1.5 py-0.5 text-[10px] font-bold text-white uppercase">
+                    <div className="bg-accent absolute right-0 top-2 px-1.5 py-0.5 text-[10px] font-bold text-white uppercase md:text-xs md:px-2 md:py-1">
                       -{Math.round(item.discountPercentage)}%
                     </div>
                   )}
                 </div>
-                <div className="flex flex-col p-2.5">
-                  <p className="line-clamp-2 min-h-10 text-xs text-gray-800">
+                <div className="flex flex-col p-2.5 md:p-3">
+                  <p className="line-clamp-2 min-h-10 text-xs text-gray-800 md:text-sm">
                     {item.title}
                   </p>
                   <div className="mt-1.5 flex items-center justify-between">
-                    <p className="text-accent font-bold text-sm">
+                    <p className="text-accent font-bold text-sm md:text-base">
                       ${item.price}
                     </p>
-                    <span className="text-[10px] text-gray-400">
+                    <span className="text-[10px] text-gray-400 md:text-xs">
                       Sold {Math.floor(Math.random() * 100)}+
                     </span>
                   </div>
@@ -106,17 +107,12 @@ export default function Home() {
             ))}
           </div>
         </div>
-
-        {/* Sentinel element & loading indicator */}
         <div ref={sentinelRef} className="flex justify-center py-6">
           {isLoading && (
             <div className="flex items-center gap-2 text-gray-500">
               <Loader2 className="h-5 w-5 animate-spin" />
               <span className="text-sm">Loading more products...</span>
             </div>
-          )}
-          {!hasMore && allProducts.length > 0 && (
-            <p className="text-xs text-gray-400">You&apos;ve seen all products</p>
           )}
         </div>
       </div>
