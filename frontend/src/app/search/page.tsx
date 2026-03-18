@@ -5,7 +5,6 @@ import { GetProduct } from "@/services/productServices";
 import { ArrowLeft, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { title } from "process";
 import { useEffect, useState } from "react";
 
 export default function SearchInitial() {
