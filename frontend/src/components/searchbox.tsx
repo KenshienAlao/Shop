@@ -1,4 +1,9 @@
-export default function Searchbox({ query, setQuery }: any) {
+export default function Searchbox({ query, setQuery, handleProductEnteredSearch }: any) {
+    const Enter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            handleProductEnteredSearch(query);
+        }
+    }
     return (
         <>
             <input
@@ -7,6 +12,7 @@ export default function Searchbox({ query, setQuery }: any) {
                 autoFocus
                 className="bg-transparent px-3 outline-none"
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={Enter}
             />
         </>
     );
