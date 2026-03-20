@@ -1,11 +1,25 @@
 const jwt = require("jsonwebtoken")
+const supabase = require("../config/db")
 
 const refresh = async (req, res) => {
     const token = req.cookies.refresh_token;
     if (!token) return res.status(401).json({ error: "Unauthorized" })
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET_REFRESH)
-        const newAccessToken = jwt.sign({ username: decoded.username, email: decoded.email }, process.env.JWT_SECRET, { expiresIn: "15m" })
+        
+        let userId = decoded.id;
+        if (!userId && decoded.email) {
+            const { data, error } = await supabase
+                .from("users")
+                .select("id")
+                .eq("email", decoded.email)
+                .single();
+            if (!error && data) {
+                userId = data.id;
+            }
+        }
+
+        const newAccessToken = jwt.sign({ id: userId, username: decoded.username, email: decoded.email }, process.env.JWT_SECRET, { expiresIn: "15m" })
 
         const isProduction = process.env.NODE_ENV === "production";
 

@@ -4,6 +4,7 @@ const input = async (req, res) => {
     try {
         const { search } = req.body;
         const user_id = req.client.id;
+        if (!user_id) return res.status(401).json({ error: "Unauthorized: Missing user identity" });
 
         if (!search?.trim()) {
             return res.status(400).json({ error: "Search query is required" });
@@ -57,6 +58,7 @@ const input = async (req, res) => {
 const get = async (req, res) => {
     try {
         const user_id = req.client.id;
+        if (!user_id) return res.status(401).json({ error: "Unauthorized: Missing user identity" });
 
         const { data, error } = await supabase
             .from("recent_search")
