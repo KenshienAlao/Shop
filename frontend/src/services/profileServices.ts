@@ -13,7 +13,7 @@ export async function profileServices() {
     );
 
     if (!refreshRes.ok) {
-      alert("Failed to refresh the token");
+      throw new Error("Failed to refresh the token");
       return false;
     }
 
@@ -22,10 +22,7 @@ export async function profileServices() {
     });
   }
 
-  if (!res.ok) {
-    alert("Failed to fetch profile");
-    return false;
-  }
+  if (!res.ok) throw new Error("Failed to fetch profile");
 
   const data = await res.json();
 

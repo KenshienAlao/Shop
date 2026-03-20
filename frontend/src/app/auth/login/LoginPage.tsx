@@ -1,10 +1,12 @@
 "use client";
 import { login } from "@/services/authServices";
+import { useProfileContext } from "@/contexts/ProfileContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function LoginPage() {
+  const { refreshProfile } = useProfileContext();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
@@ -15,9 +17,10 @@ export default function LoginPage() {
     try {
       e.preventDefault();
       await login(email, password);
+      await refreshProfile();
       router.replace("/dashboard");
     } catch (err: any) {
-      alert(err.message);
+      throw new Error(err.message);
     }
   };
 

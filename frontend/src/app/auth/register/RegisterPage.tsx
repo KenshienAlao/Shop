@@ -18,7 +18,7 @@ export default function RegisterPage() {
             await register(username, email, password, confirmpassword);
             router.replace("/auth/login");
         } catch (err: any) {
-            alert(err.message);
+            throw new Error(err.message);
         }
     }
 

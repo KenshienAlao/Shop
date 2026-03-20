@@ -114,6 +114,24 @@ const remove = async (req, res) => {
 
         const normalizedSearch = search.trim();
         const updatedHistory = queryList.filter((item) => item !== normalizedSearch);
+
+        console.log("status", updatedHistory.length)
+
+
+        if (updatedHistory.length === 0) {
+            try {
+                const { error } = await supabase
+                    .from("recent_search")
+                    .delete()
+                    .eq("user_id", user_id);
+
+                if (error) throw error;
+
+                return res.status(200).json({ message: "Search history cleared" });
+            } catch (error) {
+                return res.status(500).json({ error: "Failed to clear search history" })
+            }
+        }
         const { error: saveError } = await supabase
             .from("recent_search")
             .update({ query: JSON.stringify(updatedHistory) })
@@ -125,7 +143,6 @@ const remove = async (req, res) => {
             message: "Search history updated",
             recent: updatedHistory
         });
-
     } catch (err) {
         return res.status(500).json({ error: "Internal Server Error" });
     }
@@ -135,8 +152,6 @@ const clear = async (req, res) => {
     try {
         const user_id = req.client.id;
         if (!user_id) return res.status(401).json({ error: "Unauthorized: Missing user identity" });
-
-        console.log(user_id)
 
         const { error } = await supabase
             .from("recent_search")

@@ -7,7 +7,7 @@ export function RecentQuery() {
     try {
       await input(query.trim());
     } catch (err: any) {
-      console.error(err.message);
+      throw new Error(err.message);
     }
   }, []);
 
@@ -20,11 +20,9 @@ export function GetRecentQuery() {
       const res = await get();
       return res.data;
     } catch (err: any) {
-      console.error(err.message);
+      throw new Error(err.message);
     }
   }, []);
 
   return { getRecentQuery };
 }
-
-

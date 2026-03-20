@@ -20,6 +20,7 @@ interface Profile {
 interface ProfileContextType extends Profile {
   isLoading: boolean;
   refreshProfile: () => Promise<void>;
+  clearProfile: () => void;
 }
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
@@ -50,13 +51,18 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     loadProfile();
   }, [loadProfile]);
 
+  const clearProfile = useCallback(() => {
+    setProfile({ username: "", email: "" });
+  }, []);
+
   const value = useMemo(
     () => ({
       ...profile,
       isLoading,
       refreshProfile: loadProfile,
+      clearProfile,
     }),
-    [profile, isLoading, loadProfile],
+    [profile, isLoading, loadProfile, clearProfile],
   );
 
   return (

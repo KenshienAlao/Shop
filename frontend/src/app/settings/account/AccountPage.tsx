@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 export default function AccountPage() {
-    const { username, email } = useProfileContext();
+    const { username, email, clearProfile } = useProfileContext();
     const router = useRouter();
     const sections = [
         {
@@ -36,6 +36,8 @@ export default function AccountPage() {
         e.preventDefault();
         try {
             await logout();
+            localStorage.clear();
+            clearProfile();
             router.replace("/auth/login")
         } catch (err: any) {
             alert(err.message)
@@ -68,8 +70,8 @@ export default function AccountPage() {
                                 {item.context.map((subItem) => (
                                     <div key={subItem.label}>
                                         <div className="flex justify-between px-5 py-5">
-                                            <h1 className="text-forground">{subItem.label}</h1>
-                                            <h1 className="text-subforground">{subItem.info}</h1>
+                                            <h1 className="text-forground">{subItem?.label}</h1>
+                                            <h1 className="text-subforground">{subItem?.info}</h1>
                                         </div>
                                         <div className="h-px bg-initial" />
                                     </div>
