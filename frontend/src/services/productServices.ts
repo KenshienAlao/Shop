@@ -1,4 +1,4 @@
-interface ProductsProps {
+export interface ProductsProps {
   id: number;
   title: string;
   price: number;
@@ -6,13 +6,13 @@ interface ProductsProps {
   quantity: number;
 }
 
-interface CartsProps {
+export interface CartsProps {
   id: number;
   products: ProductsProps[];
   userId: number;
 }
 
-interface GetProductProps {
+export interface GetProductProps {
   carts: CartsProps[];
   total: number;
   skip: number;

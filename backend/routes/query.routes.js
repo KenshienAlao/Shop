@@ -8,6 +8,8 @@ const authMiddleware = require("../middleware/auth.middleware")
 
 router.post("/input", authMiddleware, queryController.input)
 router.get("/get", authMiddleware, queryController.get)
+router.delete("/remove", authMiddleware, queryController.remove)
+router.delete("/clear", authMiddleware, queryController.clear)
 
 
 module.exports = router

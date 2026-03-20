@@ -1,7 +1,7 @@
-import { input } from "@/services/queryServices";
+import { get, input } from "@/services/queryServices";
 import { useCallback } from "react";
 
-export function useRecentQuery() {
+export function RecentQuery() {
   const saveRecentQuery = useCallback(async (query: string) => {
     if (!query?.trim()) return;
     try {
@@ -13,3 +13,18 @@ export function useRecentQuery() {
 
   return { saveRecentQuery };
 }
+
+export function GetRecentQuery() {
+  const getRecentQuery = useCallback(async () => {
+    try {
+      const res = await get();
+      return res.data;
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  }, []);
+
+  return { getRecentQuery };
+}
+
+

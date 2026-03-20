@@ -25,3 +25,30 @@ export async function get() {
   }
   return data;
 }
+
+export async function remove(search: string) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_QUERY}/remove`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ search }),
+  });
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error);
+  }
+}
+
+export async function clear() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_QUERY}/clear`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  });
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error);
+  }
+}
