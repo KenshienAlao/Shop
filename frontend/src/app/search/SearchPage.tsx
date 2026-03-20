@@ -1,13 +1,15 @@
 "use client";
 
-import Searchbox from "@/components/searchbox";
+import { get } from "@/services/queryServices";
+import { useRecentQuery } from "@/hooks/useRecentQuery";
 import { GetProduct } from "@/services/productServices";
 import { ArrowLeft, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
-export default function SearchPage() {
+function SearchPage() {
+    const { saveRecentQuery } = useRecentQuery();
     const [query, setQuery] = useState<any>("");
     const [products, setProducts] = useState<any[]>([]);
     const router = useRouter();
@@ -25,6 +27,18 @@ export default function SearchPage() {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        const fetchRecentQuery = async () => {
+            try {
+                const data = await get();
+                console.log(data);
+            } catch (error) {
+                console.error("Failed to fetch recent queries:", error);
+            }
+        };
+        fetchRecentQuery();
+    }, []);
+
     const filteredProduct = products.filter((item: any) =>
         item.title.toLowerCase().includes(query.toLowerCase()),
     );
@@ -32,14 +46,19 @@ export default function SearchPage() {
 
     const handleProductClickSuggested = (title: string) => {
         router.push(`/product?q=${encodeURIComponent(title)}`);
+        saveRecentQuery(title)
+
     };
 
-    const handleProductClickSearchButton = (title: string) => {
+    const handleProductSearch = (title: string) => {
         router.push(`/product?q=${encodeURIComponent(title)}`);
+        saveRecentQuery(title)
     }
 
-    const handleProductEnteredSearch = (title: string) => {
-        router.push(`/product?q=${encodeURIComponent(title)}`);
+    const Enter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            handleProductSearch(query);
+        }
     }
 
     return (
@@ -50,9 +69,16 @@ export default function SearchPage() {
                         <ArrowLeft className="text-accent" height={40} width={40} />
                     </Link>
                     <div className="ring-accent flex flex-1 items-center justify-between gap-2 overflow-hidden rounded-lg ring">
-                        <Searchbox query={query} setQuery={setQuery} handleProductEnteredSearch={handleProductEnteredSearch} />
+                        <input
+                            placeholder="Search"
+                            value={query}
+                            autoFocus
+                            className="bg-transparent px-3 outline-none"
+                            onChange={(e) => setQuery(e.target.value)}
+                            onKeyDown={Enter}
+                        />
                         <button
-                            onClick={() => handleProductClickSearchButton(query)}
+                            onClick={() => handleProductSearch(query)}
                             className="bg-accent flex h-10 w-15 items-center justify-center">
                             <SearchIcon className="text-white" />
                         </button>
@@ -60,6 +86,7 @@ export default function SearchPage() {
                 </div>
 
                 <div className="p-4">
+                    <h1></h1>
                     {query && (
                         <div className="flex flex-col rounded-lg bg-white p-4 shadow-sm">
                             {filteredProduct.length > 0 ? (
@@ -84,3 +111,5 @@ export default function SearchPage() {
         </>
     );
 }
+
+export default memo(SearchPage)

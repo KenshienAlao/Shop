@@ -22,9 +22,10 @@ app.use(express.json());
 
 app.use("/api/auth", require("./routes/auth.routes"))
 app.use("/api/client", require("./routes/client.routes"))
+app.use("/api/query", require("./routes/query.routes"))
 
 const PORT = process.env.PORT || 8080;
-     
+
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server is running on port ${PORT}`);
 });

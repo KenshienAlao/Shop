@@ -32,7 +32,7 @@ function Navbar({ isActive, setIsActive }: NavbarProps) {
             <button
               key={item.name}
               onClick={() => setIsActive(item.name)}
-              className={`flex flex-col items-center gap-1 active:opacity-50 md:gap-1.5 ${isActive === item.name ? "text-accent" : "text-subforground"}`}
+              className={`flex flex-col items-center gap-1 active:opacity-50 md:gap-1.5 ${isActive === item.name ? "text-accent" : "text-subforeground"}`}
             >
               <Icon className="w-full text-center md:h-7 md:w-7" />
               <p className="w-full text-center text-xs md:text-sm">

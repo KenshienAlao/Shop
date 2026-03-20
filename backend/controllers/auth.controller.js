@@ -42,7 +42,7 @@ const login = async (req, res) => {
 
         const { data, error } = await supabase
             .from("users")
-            .select("username, email, password")
+            .select("id, username, email, password")
             .eq("email", email)
             .single()
 
@@ -53,8 +53,8 @@ const login = async (req, res) => {
 
         if (!isMatch) return res.status(400).json({ error: "Password do not match" })
 
-        const accessToken = jwt.sign({ username: data.username, email: data.email }, process.env.JWT_SECRET, { expiresIn: "15m" })
-        const refreshToken = jwt.sign({ username: data.username, email: data.email }, process.env.JWT_SECRET_REFRESH, { expiresIn: "30d" })
+        const accessToken = jwt.sign({ id: data.id, username: data.username, email: data.email }, process.env.JWT_SECRET, { expiresIn: "15m" })
+        const refreshToken = jwt.sign({ id: data.id, username: data.username, email: data.email }, process.env.JWT_SECRET_REFRESH, { expiresIn: "30d" })
 
         const isProduction = process.env.NODE_ENV === "production";
 
@@ -75,7 +75,7 @@ const login = async (req, res) => {
 
         return res.status(200).json({
             message: "Success Login",
-            user: { username: data.username, email: data.email }
+            user: { username: data.username, email: data.email, id: data.id }
         })
 
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { GetProduct } from "@/services/productServices";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Search } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -34,18 +34,19 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-dvh bg-gray-100">
-      <div className="bg-accent sticky top-0 z-50">
-        <div className="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-3 md:px-8">
+      <div className="bg-accent sticky top-0 z-50 flex">
+        <header className="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-3 md:px-8 ">
           <Link href="/search">
             <ArrowLeft className="text-main" height={28} width={28} />
           </Link>
-          <h1 className="text-main truncate text-lg font-semibold">
-            Results for &quot;{query}&quot;
-          </h1>
-          <span className="text-main/70 ml-auto text-sm whitespace-nowrap">
-            {filteredProducts.length} found
-          </span>
-        </div>
+          <Link
+            href="/search"
+            className="bg-main flex flex-1 max-w-xl items-center gap-2 rounded-lg p-3"
+          >
+            <Search className="text-subforeground" />
+            <span className="text-accent">Results for &quot;{query}&quot;</span>
+          </Link>
+        </header>
       </div>
 
       <div className="mx-auto w-full max-w-7xl px-4 py-5 md:px-8">

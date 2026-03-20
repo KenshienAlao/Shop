@@ -4,8 +4,8 @@
   --color-accent: var(--accent);
   --color-main: var(--background);
   --color-initial: var(--initial);
-  --color-forground: var(--foreground);
-  --color-subforground: color-mix(in srgb, var(--foreground) 50%, transparent);
+  --color-foreground: var(--foreground);
+  --color-subforeground: color-mix(in srgb, var(--foreground) 50%, transparent);
 }
 
 :root {
@@ -35,5 +35,8 @@ body {
 
 button {
   cursor: pointer;
+}
+
+* {
   user-select: none;
 }
