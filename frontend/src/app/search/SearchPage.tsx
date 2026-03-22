@@ -14,8 +14,8 @@ import { GetProduct } from "@/services/productServices";
 import { clear, remove } from "@/services/queryServices";
 
 // Components
-import RecentSearchChip from "./components/RecentSearchChip";
-import SuggestionItem from "./components/SuggestionItem";
+import RecentSearchChip from "@/components/RecentSearchChip";
+import SuggestionItem from "@/components/SuggestionItem";
 
 // ===================================
 // Main Component

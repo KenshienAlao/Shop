@@ -3,10 +3,12 @@ import Link from "next/link";
 import { Loader2, MessageCircleMore, Search } from "lucide-react";
 import { GetProduct } from "@/services/productServices";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const ITEMS_PER_PAGE = 10;
 
 export default function HomePage() {
+    const router = useRouter();
     const [allProducts, setAllProducts] = useState<any[]>([]);
     const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
     const [isLoading, setIsLoading] = useState(false);
@@ -56,6 +58,11 @@ export default function HomePage() {
 
     const visibleProducts = allProducts.slice(0, visibleCount);
 
+    const product = (item: any) => {
+        const encoded = encodeURIComponent(item.id);
+        router.push(`/showproduct?q=${encoded}`);
+    }
+
     return (
         <>
             <div className="flex w-full flex-col">
@@ -78,6 +85,7 @@ export default function HomePage() {
                         {visibleProducts.map((item: any, index: number) => (
                             <div
                                 key={`${item.id}-${index}`}
+                                onClick={() => product(item)}
                                 className="overflow-hidden rounded-md bg-white shadow-sm transition-shadow hover:shadow-md"
                             >
                                 <div className="relative aspect-square w-full overflow-hidden bg-gray-100">

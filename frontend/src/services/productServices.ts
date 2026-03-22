@@ -1,9 +1,10 @@
 export interface ProductsProps {
   id: number;
   title: string;
+  quantity: number;
   price: number;
   discountPercentage: number;
-  quantity: number;
+  thumbnail: string;
 }
 
 export interface CartsProps {
