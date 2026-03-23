@@ -1,16 +1,19 @@
 "use client";
 
+import { useSeeProduct } from "@/hooks/useSeeProduct";
 import { GetProduct } from "@/services/productServices";
 import { ArrowLeft, Loader2, Search } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ProductPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
   const [products, setProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { product } = useSeeProduct()
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -31,6 +34,7 @@ export default function ProductPage() {
   const filteredProducts = products.filter((item: any) =>
     item.title.toLowerCase().includes(query.toLowerCase()),
   );
+
 
   return (
     <div className="min-h-dvh bg-gray-100">
@@ -57,7 +61,8 @@ export default function ProductPage() {
         ) : filteredProducts.length > 0 ? (
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5">
             {filteredProducts.map((item: any, index: number) => (
-              <div
+              <button
+                onClick={() => product(item)}
                 key={`${item.id}-${index}`}
                 className="overflow-hidden rounded-md bg-white shadow-sm transition-shadow hover:shadow-md"
               >
@@ -83,7 +88,7 @@ export default function ProductPage() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         ) : (
