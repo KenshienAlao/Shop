@@ -24,6 +24,7 @@ app.use(express.json());
 app.use("/api/auth", require("./routes/auth.routes"))
 app.use("/api/client", require("./routes/client.routes"))
 app.use("/api/query", require("./routes/query.routes"))
+app.use("/api/cart", require("./routes/cart.routes"))
 
 const PORT = process.env.PORT || 8080;
 

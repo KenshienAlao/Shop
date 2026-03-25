@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ProfileProvider } from "@/contexts/ProfileContext";
+import { Toaster } from "react-hot-toast";
+
 export const metadata: Metadata = {
   title: "Shop",
 };
@@ -15,6 +17,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <ProfileProvider>
         <body className="antialiased">
           {children}
+          <Toaster position="top-center" />
         </body>
       </ProfileProvider>
 

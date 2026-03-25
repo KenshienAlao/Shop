@@ -10,7 +10,6 @@ function authMiddleware(req, res, next) {
         if (!decoded.id) {
             return res.status(401).json({ error: "Unauthorized: Access token is missing identity" });
         }
-
         req.client = decoded
         next()
     } catch (err) {
