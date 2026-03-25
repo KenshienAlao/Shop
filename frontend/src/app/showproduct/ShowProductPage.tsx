@@ -13,15 +13,17 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ProductsProps } from "@/services/productServices";
+import AddToCart from "@/components/AddToCart";
 
 export default function ShowProductPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const productURL = searchParams.get("q");
+    const productURL = searchParams.get("id");
     const [product, setProduct] = useState<ProductsProps[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [lightboxOpen, setLightboxOpen] = useState(false);
+    const [isOpenAddToCart, setIsOpenAddToCart] = useState(false)
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -76,7 +78,6 @@ export default function ShowProductPage() {
 
     return (
         <>
-            {/* Lightbox */}
             {lightboxOpen && (
                 <div
                     className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 backdrop-blur-sm"
@@ -90,8 +91,14 @@ export default function ShowProductPage() {
                 </div>
             )}
 
+            {isOpenAddToCart && searchedProduct && (
+                <AddToCart
+                    product={searchedProduct}
+                    onClose={() => setIsOpenAddToCart(prev => !prev)}
+                />
+            )}
+
             <div className="flex min-h-dvh flex-col bg-gray-100 pb-24">
-                {/* Sticky Header */}
                 <div className="bg-accent sticky top-0 z-50 flex">
                     <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 md:px-8">
                         <button
@@ -123,13 +130,11 @@ export default function ShowProductPage() {
                                 alt={searchedProduct.title}
                                 className="h-full w-full object-cover transition-transform duration-500"
                             />
-                            {/* Discount Badge */}
                             {searchedProduct.discountPercentage > 0 && (
                                 <div className="bg-accent absolute top-3 left-0 rounded-r-md px-2 py-1 text-xs font-bold text-white">
                                     -{Math.round(searchedProduct.discountPercentage)}% OFF
                                 </div>
                             )}
-                            {/* Zoom hint */}
                             <div className="absolute right-3 bottom-3 flex items-center gap-1 rounded-full bg-black/30 px-2 py-1 text-[10px] text-white backdrop-blur-sm">
                                 <ZoomIn size={12} />
                                 Tap to zoom
@@ -159,7 +164,6 @@ export default function ShowProductPage() {
                             </span>
                         </div>
                     </div>
-                    {/* Shipping Info */}
                     <div className="mt-2 flex items-center gap-2.5 bg-white px-4 py-3">
                         <Truck className="text-accent shrink-0" size={18} />
                         <div>
@@ -190,6 +194,7 @@ export default function ShowProductPage() {
 
                     {/* Add to Cart Button */}
                     <button
+                        onClick={() => setIsOpenAddToCart(true)}
                         id="add-to-cart-btn"
                         className="border-accent text-accent flex flex-1 items-center justify-center gap-2 rounded-xl border py-3 text-sm font-semibold transition-colors hover:bg-orange-50 active:scale-95"
                     >

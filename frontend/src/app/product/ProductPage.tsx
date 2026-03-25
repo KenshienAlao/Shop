@@ -8,9 +8,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ProductPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const query = searchParams.get("q") || "";
+  const query = searchParams.get("search_query") || "";
   const [products, setProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { product } = useSeeProduct()
@@ -48,7 +47,7 @@ export default function ProductPage() {
             className="bg-main flex flex-1 max-w-xl items-center gap-2 rounded-lg p-3"
           >
             <Search className="text-subforeground" />
-            <span className="text-accent">Results for &quot;{query}&quot;</span>
+            <span className="text-accent">Results for {query}</span>
           </Link>
         </header>
       </div>

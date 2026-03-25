@@ -80,7 +80,7 @@ function SearchPage() {
     const handleSearchSubmit = useCallback((title: string) => {
         if (!title.trim()) return;
         const encoded = encodeURIComponent(title.trim());
-        router.push(`/product?q=${encoded}`);
+        router.push(`/product?search_query=${encoded}`);
         saveRecentQuery(title.trim());
     }, [router, saveRecentQuery]);
 

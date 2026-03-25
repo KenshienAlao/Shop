@@ -102,9 +102,6 @@ export default function HomePage() {
                                         <p className="text-accent text-sm font-bold md:text-base">
                                             ${item.price}
                                         </p>
-                                        <span className="text-[10px] text-gray-400 md:text-xs">
-                                            Sold {Math.floor(Math.random() * 100)}+
-                                        </span>
                                     </div>
                                 </div>
                             </div>
