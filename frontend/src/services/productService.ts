@@ -1,4 +1,4 @@
-export interface ProductsProps {
+export interface Product {
   id: number;
   title: string;
   quantity: number;
@@ -7,27 +7,26 @@ export interface ProductsProps {
   thumbnail: string;
 }
 
-export interface CartsProps {
+export interface Cart {
   id: number;
-  products: ProductsProps[];
+  products: Product[];
   userId: number;
 }
 
-export interface GetProductProps {
-  carts: CartsProps[];
+export interface PaginatedProductResponse {
+  carts: Cart[];
   total: number;
   skip: number;
   limit: number;
 }
 
-export async function GetProduct(): Promise<GetProductProps> {
+export async function getProducts(): Promise<PaginatedProductResponse> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_DUMMY}`);
 
   if (!res.ok) {
-    throw new Error("Failed to fetch product");
+    throw new Error("Failed to fetch products");
   }
 
   const data = await res.json();
-
   return data;
 }

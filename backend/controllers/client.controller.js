@@ -6,7 +6,7 @@ const refresh = async (req, res) => {
     if (!token) return res.status(401).json({ error: "Unauthorized" })
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET_REFRESH)
-        
+
         let userId = decoded.id;
         if (!userId && decoded.email) {
             const { data, error } = await supabase
@@ -27,7 +27,8 @@ const refresh = async (req, res) => {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? "none" : "lax",
-            maxAge: 15 * 60 * 1000
+            maxAge: 15 * 60 * 1000,
+            path: "/"
         });
 
         return res.status(200).json({ message: "Success Refresh" })

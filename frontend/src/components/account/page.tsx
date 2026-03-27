@@ -1,6 +1,6 @@
 "use client"
 import { ArrowLeft, User2 } from "lucide-react";
-import { useProfileContext } from "@/contexts/ProfileContext";
+import { useProfile } from "@/contexts/ProfileContext";
 import Link from "next/link";
 
 
@@ -21,7 +21,7 @@ const sections = [
 ]
 
 export default function Account() {
-    const { username } = useProfileContext();
+    const { username } = useProfile();
 
     return (
         <>

@@ -1,28 +1,26 @@
-import { get, input } from "@/services/queryServices";
+import { addSearchQuery, getSearchQueries } from "@/services/queryService";
 import { useCallback } from "react";
 
-export function RecentQuery() {
-  const saveRecentQuery = useCallback(async (query: string) => {
+export function useSearchHistory() {
+  const saveSearchQuery = useCallback(async (query: string) => {
     if (!query?.trim()) return;
     try {
-      await input(query.trim());
-    } catch (err: any) {
-      throw new Error(err.message);
+      await addSearchQuery(query.trim());
+    } catch (err: unknown) {
+      const error = err as Error;
+      throw new Error(error.message || "Failed to save search query");
     }
   }, []);
 
-  return { saveRecentQuery };
-}
-
-export function GetRecentQuery() {
-  const getRecentQuery = useCallback(async () => {
+  const fetchSearchHistory = useCallback(async () => {
     try {
-      const res = await get();
+      const res = await getSearchQueries();
       return res.data;
-    } catch (err: any) {
-      throw new Error(err.message);
+    } catch (err: unknown) {
+      const error = err as Error;
+      throw new Error(error.message || "Failed to fetch search history");
     }
   }, []);
 
-  return { getRecentQuery };
+  return { saveSearchQuery, fetchSearchHistory };
 }

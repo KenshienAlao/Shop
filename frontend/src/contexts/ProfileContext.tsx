@@ -9,15 +9,15 @@ import React, {
   useMemo,
   ReactNode,
 } from "react";
-import { profileServices } from "../services/profileServices";
+import { getProfile } from "@/services/profileService";
 import { useRouter } from "next/navigation";
 
-interface Profile {
+interface UserProfile {
   username: string;
   email: string;
 }
 
-interface ProfileContextType extends Profile {
+interface ProfileContextType extends UserProfile {
   isLoading: boolean;
   refreshProfile: () => Promise<void>;
   clearProfile: () => void;
@@ -26,21 +26,21 @@ interface ProfileContextType extends Profile {
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 export function ProfileProvider({ children }: { children: ReactNode }) {
-  const [profile, setProfile] = useState<Profile>({ username: "", email: "" });
+  const [profile, setProfile] = useState<UserProfile>({ username: "", email: "" });
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  const loadProfile = useCallback(async () => {
+  const handleFetchProfile = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await profileServices();
+      const data = await getProfile();
       if (data) {
         setProfile({ username: data.username, email: data.email });
       } else {
         router.push("/auth/login");
       }
     } catch (err: any) {
-      console.error("Profile fetch error:", err);
+      console.error("[ProfileContext] Fetch error:", err);
       router.push("/auth/login");
     } finally {
       setIsLoading(false);
@@ -48,32 +48,35 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
   }, [router]);
 
   useEffect(() => {
-    loadProfile();
-  }, [loadProfile]);
+    handleFetchProfile();
+  }, [handleFetchProfile]);
 
   const clearProfile = useCallback(() => {
     setProfile({ username: "", email: "" });
   }, []);
 
-  const value = useMemo(
+  const contextValue = useMemo(
     () => ({
       ...profile,
       isLoading,
-      refreshProfile: loadProfile,
+      refreshProfile: handleFetchProfile,
       clearProfile,
     }),
-    [profile, isLoading, loadProfile, clearProfile],
+    [profile, isLoading, handleFetchProfile, clearProfile],
   );
 
   return (
-    <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>
+    <ProfileContext.Provider value={contextValue}>
+      {children}
+    </ProfileContext.Provider>
   );
 }
 
-export const useProfileContext = () => {
+export const useProfile = () => {
   const context = useContext(ProfileContext);
   if (context === undefined) {
-    throw new Error("useProfileContext must be used within a ProfileProvider");
+    throw new Error("useProfile must be used within a ProfileProvider");
   }
   return context;
 };
+

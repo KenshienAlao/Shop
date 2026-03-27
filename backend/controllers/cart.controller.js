@@ -18,10 +18,8 @@ const addToCart = async (req, res) => {
                 .insert({ user_id: userID })
                 .select()
                 .single()
-
             user = newUser;
         }
-
 
         if (!user) return res.status(404).json({ error: "User not found" })
 
@@ -33,16 +31,12 @@ const addToCart = async (req, res) => {
             .maybeSingle()
 
         if (productExist) return res.status(400).json({ error: "Product already exists in cart" })
-        const { data: newProduct, error } = await supabase
+        const { data: newProduct } = await supabase
             .from("cart_item")
             .insert({ cart_id: user.id, product_id: productID, qty: Productqty })
             .select()
             .single()
-
-        if (error) console.log(error)
-
-        console.log("Added to cart:", newProduct)
-        return res.status(200).json({ message: "Successfully Added to Cart" })
+        return res.status(200).json({ message: "Successfully Added to Cart", data: newProduct })
 
     } catch (err) {
         return res.status(500).json({ error: err.message })
@@ -50,4 +44,26 @@ const addToCart = async (req, res) => {
 }
 
 
-module.exports = { addToCart }
+const fetchCart = async (req, res) => {
+    try {
+        const userID = req.client.id
+        const { data: exist } = await supabase
+            .from("cart")
+            .select("*")
+            .eq("user_id", userID)
+            .maybeSingle()
+        if (exist) {
+            const { data: cartItems } = await supabase
+                .from("cart_item")
+                .select("*")
+                .eq("cart_id", exist.id)
+
+            return res.status(200).json({ cartItems })
+        }
+    } catch (err) {
+        return res.status(500).json({ error: err.message })
+    }
+}
+
+
+module.exports = { addToCart, fetchCart }

@@ -1,15 +1,19 @@
-import { addToCartService } from "@/services/cartService";
+import {
+  addToCart as addToCartService,
+} from "@/services/cartService";
 import { notifyFailed, notifySuccess } from "@/utils/toast";
 import { useCallback } from "react";
 
 export function useAddToCart() {
-  const addCart = useCallback(async (id: number, qty: number) => {
+  const addToCart = useCallback(async (productId: number, quantity: number) => {
     try {
-      const res = await addToCartService(id, qty);
+      const res = await addToCartService(productId, quantity);
       notifySuccess(res.message);
-    } catch (err: any) {
-      notifyFailed(err.message || "Failed to add product to cart");
+    } catch (err: unknown) {
+      const error = err as Error;
+      notifyFailed(error.message || "Failed to add product to cart");
     }
   }, []);
-  return { addCart };
+
+  return { addToCart };
 }

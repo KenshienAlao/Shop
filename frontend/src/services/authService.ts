@@ -2,7 +2,7 @@ export async function register(
   username: string,
   email: string,
   password: string,
-  confirmpassword: string,
+  confirmPassword: string,
 ) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_AUTH}/register`, {
     method: "POST",
@@ -12,7 +12,7 @@ export async function register(
       username,
       email,
       password,
-      confirmpassword,
+      confirmpassword: confirmPassword,
     }),
   });
   const data = await res.json();
@@ -21,7 +21,7 @@ export async function register(
     throw new Error(data.error);
   }
 
-  alert("Success Register");
+  alert("Successfully Registered");
   return data;
 }
 
@@ -42,11 +42,12 @@ export async function login(email: string, password: string) {
       throw new Error(data.error);
     }
 
-    alert("Success Login");
+    alert("Successfully Logged In");
     return data;
-  } catch (err: any) {
-    throw new Error(err.message);
-  }
+    } catch (err: unknown) {
+      const error = err as Error;
+      throw new Error(error.message);
+    }
 }
 
 export async function logout() {
@@ -55,3 +56,4 @@ export async function logout() {
     credentials: "include",
   });
 }
+

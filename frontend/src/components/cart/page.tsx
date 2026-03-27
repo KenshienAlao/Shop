@@ -1,11 +1,11 @@
 import { Suspense } from "react";
-import ShowProductPage from "./ShowProductPage";
-import Loading from "@/components/Loading";
+import CartPage from "./CartPage";
+import Loading from "../Loading";
 
 export default function Page() {
     return (
         <Suspense fallback={<Loading />}>
-            <ShowProductPage />
+            <CartPage />
         </Suspense>
     );
 }

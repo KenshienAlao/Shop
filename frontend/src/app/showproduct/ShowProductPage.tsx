@@ -1,5 +1,6 @@
 "use client";
-import { GetProduct } from "@/services/productServices";
+
+import { getProducts, Product, Cart } from "@/services/productService";
 import {
   ArrowLeft,
   Loader2,
@@ -9,66 +10,65 @@ import {
   Truck,
   ZoomIn,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ProductsProps } from "@/services/productServices";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState, useMemo } from "react";
 import AddToCart from "@/components/AddToCart";
 
 export default function ShowProductPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const productURL = searchParams.get("id");
-  const [product, setProduct] = useState<ProductsProps[]>([]);
+  const productId = searchParams.get("id");
+  
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [isOpenAddToCart, setIsOpenAddToCart] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [isAddToCartOpen, setIsAddToCartOpen] = useState(false);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProductData = async () => {
       try {
         setIsLoading(true);
-        const data = await GetProduct();
-        const products = data.carts.flatMap((item: any) => item.products);
-        setProduct(products);
+        const data = await getProducts();
+        const flattenedProducts = data.carts.flatMap((cart: Cart) => cart.products);
+        setProducts(flattenedProducts);
       } catch (error) {
-        throw new Error("Failed to fetch product");
+        console.error("[ShowProductPage] Fetch error:", error);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchProducts();
+    fetchProductData();
   }, []);
 
-  const searchedProduct = product.find(
-    (item) => item.id === Number(productURL),
-  );
+  const currentProduct = useMemo(() => {
+    return products.find((p) => p.id === Number(productId));
+  }, [products, productId]);
 
   useEffect(() => {
-    if (searchedProduct?.thumbnail) {
-      setSelectedImage(searchedProduct.thumbnail);
+    if (currentProduct?.thumbnail) {
+      setSelectedImage(currentProduct.thumbnail);
     }
-  }, [searchedProduct]);
-
+  }, [currentProduct]);
   if (isLoading) {
     return (
       <div className="flex min-h-dvh items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="text-accent h-10 w-10 animate-spin" />
-          <p className="text-sm text-gray-400">Loading product...</p>
+          <p className="text-sm font-medium text-gray-400">Loading details...</p>
         </div>
       </div>
     );
   }
 
-  if (!searchedProduct) {
+  if (!currentProduct) {
     return (
-      <div className="flex min-h-dvh flex-col items-center justify-center gap-3 bg-gray-50">
-        <p className="text-lg font-semibold text-gray-500">Product not found</p>
+      <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-gray-50 px-6 text-center">
+        <p className="text-lg font-bold text-gray-800">Product not found</p>
+        <p className="text-sm text-gray-500 max-w-xs">We couldn't find the product you're looking for. It might have been removed or the link is incorrect.</p>
         <button
           onClick={() => router.back()}
-          className="bg-accent rounded-lg px-5 py-2 text-sm font-medium text-white"
+          className="bg-accent rounded-xl px-8 py-3 text-sm font-bold text-white shadow-lg shadow-accent/20 active:scale-95 transition-transform"
         >
           Go Back
         </button>
@@ -78,137 +78,145 @@ export default function ShowProductPage() {
 
   return (
     <>
-      {lightboxOpen && (
+      {/* Photo Lightbox */}
+      {isLightboxOpen && (
         <div
-          className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 backdrop-blur-sm"
-          onClick={() => setLightboxOpen(false)}
+          className="fixed inset-0 z-100 flex items-center justify-center bg-black/90 backdrop-blur-md transition-all duration-300"
+          onClick={() => setIsLightboxOpen(false)}
         >
           <img
-            src={selectedImage ?? searchedProduct.thumbnail}
-            alt={searchedProduct.title}
-            className="max-h-[90vh] max-w-[90vw] rounded-xl object-contain shadow-2xl"
+            src={selectedImage ?? currentProduct.thumbnail}
+            alt={currentProduct.title}
+            className="max-h-[90vh] max-w-[90vw] rounded-2xl object-contain shadow-2xl animate-in zoom-in-95 duration-200"
           />
         </div>
       )}
 
-      {isOpenAddToCart && searchedProduct && (
+      {/* Add To Cart Drawer */}
+      {isAddToCartOpen && (
         <AddToCart
-          product={searchedProduct}
-          onClose={() => setIsOpenAddToCart((prev) => !prev)}
+          product={currentProduct}
+          onClose={() => setIsAddToCartOpen(false)}
         />
       )}
 
-      <div className="flex min-h-dvh flex-col bg-gray-100 pb-24">
-        <div className="bg-accent sticky top-0 z-50 flex">
+      <div className="flex min-h-dvh flex-col bg-gray-50 pb-28">
+        {/* Header */}
+        <div className="bg-accent sticky top-0 z-50 shadow-md">
           <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 md:px-8">
             <button
               onClick={() => router.back()}
-              className="rounded-full p-1 transition-opacity hover:opacity-80 active:opacity-60"
+              className="rounded-full p-2 hover:bg-white/10 transition-colors"
             >
-              <ArrowLeft className="text-main" height={26} width={26} />
+              <ArrowLeft className="text-white" size={24} />
             </button>
-            <span className="text-main line-clamp-1 max-w-[60%] text-sm font-medium">
-              {searchedProduct.title}
-            </span>
-            <button className="rounded-full p-1 transition-opacity hover:opacity-80 active:opacity-60">
-              <Share2 className="text-main" height={22} width={22} />
+            <h2 className="text-white line-clamp-1 max-w-[60%] text-sm font-bold tracking-tight">
+              {currentProduct.title}
+            </h2>
+            <button className="rounded-full p-2 hover:bg-white/10 transition-colors">
+              <Share2 className="text-white" size={22} />
             </button>
           </header>
         </div>
 
-        {/* Main Content */}
-        <div className="mx-auto w-full max-w-2xl flex-1 px-0 md:px-4 md:py-4">
-          {/* Image Gallery */}
-          <div className="bg-white">
-            {/* Main Image */}
-            <div
-              className="relative aspect-square w-full cursor-zoom-in overflow-hidden bg-gray-50"
-              onClick={() => setLightboxOpen(true)}
-            >
-              <img
-                src={selectedImage ?? searchedProduct.thumbnail}
-                alt={searchedProduct.title}
-                className="h-full w-full object-cover transition-transform duration-500"
-              />
-              {searchedProduct.discountPercentage > 0 && (
-                <div className="bg-accent absolute top-3 left-0 rounded-r-md px-2 py-1 text-xs font-bold text-white">
-                  -{Math.round(searchedProduct.discountPercentage)}% OFF
+        {/* Global Body Container */}
+        <main className="mx-auto w-full max-w-4xl flex-1 md:py-6">
+          <div className="flex flex-col md:flex-row gap-6">
+            
+            {/* Left: Image Section */}
+            <div className="w-full md:w-1/2">
+                <div
+                    className="relative aspect-square w-full cursor-zoom-in overflow-hidden bg-white shadow-sm md:rounded-2xl"
+                    onClick={() => setIsLightboxOpen(true)}
+                >
+                    <img
+                        src={selectedImage ?? currentProduct.thumbnail}
+                        alt={currentProduct.title}
+                        className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
+                    />
+                    {currentProduct.discountPercentage > 0 && (
+                        <div className="bg-red-500 absolute top-4 left-0 rounded-r-lg px-3 py-1.5 text-xs font-black text-white shadow-lg">
+                            -{Math.round(currentProduct.discountPercentage)}% OFF
+                        </div>
+                    )}
+                    <div className="absolute right-4 bottom-4 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1.5 text-[10px] font-bold text-white backdrop-blur-md">
+                        <ZoomIn size={14} />
+                        TAP TO ZOOM
+                    </div>
                 </div>
-              )}
-              <div className="absolute right-3 bottom-3 flex items-center gap-1 rounded-full bg-black/30 px-2 py-1 text-[10px] text-white backdrop-blur-sm">
-                <ZoomIn size={12} />
-                Tap to zoom
-              </div>
-            </div>
-          </div>
-
-          {/* Product Info Card */}
-          <div className="mt-2 bg-white px-4 py-4">
-            {/* Price Row */}
-            <div className="flex items-baseline gap-3">
-              <span className="text-accent text-2xl font-bold">
-                ${searchedProduct.price.toFixed(2)}
-              </span>
-              <span className="bg-accent self-center rounded-full px-2 py-0.5 text-[11px] font-bold text-white">
-                -{Math.round(searchedProduct.discountPercentage)}% OFF
-              </span>
             </div>
 
-            {/* Title */}
-            <h1 className="mt-1.5 text-base leading-snug font-semibold text-gray-800">
-              {searchedProduct.title}
-            </h1>
-            <div className="mt-3 flex items-center">
-              <span className="rounded-md border border-orange-100 bg-orange-50 px-2.5 py-1 text-xs font-medium text-orange-600">
-                Stock: {searchedProduct.quantity}
-              </span>
+            {/* Right: Product Detail Section */}
+            <div className="flex-1 space-y-4 px-4 md:px-0">
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                    <div className="flex items-center gap-3">
+                        <span className="text-accent text-3xl font-black">
+                            ${currentProduct.price.toFixed(2)}
+                        </span>
+                        <span className="bg-red-100 text-red-600 rounded-full px-2.5 py-1 text-[11px] font-bold">
+                            SALE
+                        </span>
+                    </div>
+
+                    <h1 className="mt-4 text-xl font-bold leading-tight text-gray-900">
+                        {currentProduct.title}
+                    </h1>
+                    
+                    <div className="mt-4 flex items-center gap-2">
+                        <div className="flex items-center gap-1.5 rounded-lg bg-orange-50 px-3 py-1.5 border border-orange-100">
+                            <span className="h-2 w-2 rounded-full bg-orange-500 animate-pulse" />
+                            <span className="text-[11px] font-bold text-orange-700 uppercase tracking-wider">
+                                IN STOCK: {currentProduct.quantity}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-4 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                    <div className="bg-accent/10 p-3 rounded-xl">
+                        <Truck className="text-accent" size={24} />
+                    </div>
+                    <div>
+                        <p className="text-sm font-bold text-gray-800">Premium Shipping</p>
+                        <p className="text-xs text-gray-500">
+                            Guaranteed delivery within 3–5 business days.
+                        </p>
+                    </div>
+                </div>
             </div>
           </div>
-          <div className="mt-2 flex items-center gap-2.5 bg-white px-4 py-3">
-            <Truck className="text-accent shrink-0" size={18} />
-            <div>
-              <p className="text-xs font-medium text-gray-700">Free Shipping</p>
-              <p className="text-[11px] text-gray-400">
-                Estimated delivery: 3–7 business days
-              </p>
-            </div>
-          </div>
-        </div>
+        </main>
       </div>
 
-      {/* Fixed Bottom Action Bar */}
-      <div className="fixed right-0 bottom-0 left-0 z-50 border-t border-gray-200 bg-white px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]">
-        <div className="mx-auto flex w-full max-w-2xl items-center gap-2">
-          {/* Chat Button */}
+      {/* Persistent Bottom Action Bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-t border-gray-100 px-4 py-4 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+        <div className="mx-auto flex w-full max-w-4xl items-center gap-3">
           <button
             id="chat-seller-btn"
-            className="flex flex-col items-center justify-center gap-0.5 rounded-xl border border-gray-200 px-3 py-2 text-gray-500 transition-colors hover:border-orange-200 hover:bg-orange-50 hover:text-orange-500 active:scale-95"
+            className="flex flex-col items-center justify-center gap-1 rounded-2xl border border-gray-200 w-16 h-14 text-gray-500 transition-all hover:bg-gray-50 active:scale-90"
           >
-            <MessageCircle size={20} />
-            <span className="text-[10px] leading-none font-medium whitespace-nowrap">
-              Chat
-            </span>
+            <MessageCircle size={22} />
+            <span className="text-[9px] font-bold uppercase tracking-wider">Chat</span>
           </button>
 
-          {/* Add to Cart Button */}
           <button
-            onClick={() => setIsOpenAddToCart(true)}
+            onClick={() => setIsAddToCartOpen(true)}
             id="add-to-cart-btn"
-            className="border-accent text-accent flex flex-1 items-center justify-center gap-2 rounded-xl border py-3 text-sm font-semibold transition-colors hover:bg-orange-50 active:scale-95"
+            className="flex-1 flex items-center justify-center gap-2 rounded-2xl border-2 border-accent text-accent h-14 text-sm font-bold transition-all hover:bg-accent/5 active:scale-95"
           >
-            <ShoppingCart size={18} />
-            Add to Cart
+            <ShoppingCart size={20} />
+            ADD TO CART
           </button>
 
-          {/* Buy Now Button */}
           <button
             id="buy-now-btn"
-            className="bg-accent flex flex-1 items-center justify-center rounded-xl py-3 text-sm font-bold text-white transition-opacity hover:opacity-90 active:scale-95"
+            className="flex-1 bg-accent rounded-2xl h-14 text-sm font-black text-white shadow-xl shadow-accent/20 transition-all hover:opacity-90 active:scale-95"
           >
-            Buy Now
+            BUY NOW
           </button>
         </div>
       </div>
     </>
   );
 }
+

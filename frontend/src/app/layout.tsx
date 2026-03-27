@@ -14,13 +14,12 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <ProfileProvider>
-        <body className="antialiased">
+      <body className="antialiased">
+        <ProfileProvider>
           {children}
           <Toaster position="top-center" />
-        </body>
-      </ProfileProvider>
-
+        </ProfileProvider>
+      </body>
     </html>
   );
 }

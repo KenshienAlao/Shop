@@ -62,14 +62,16 @@ const login = async (req, res) => {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? "none" : "lax",
-            maxAge: 15 * 60 * 1000
+            maxAge: 15 * 60 * 1000,
+            path: "/"
         });
 
         res.cookie("refresh_token", refreshToken, {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? "none" : "lax",
-            maxAge: 30 * 24 * 60 * 60 * 1000
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+            path: "/"
         })
 
 
@@ -92,11 +94,13 @@ const logout = async (req, res) => {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? "none" : "lax",
+            path: "/"
         });
         res.clearCookie("refresh_token", {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? "none" : "lax",
+            path: "/"
         })
         return res.status(200).json({ message: "Success Logout" })
     } catch (err) {
