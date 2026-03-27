@@ -1,15 +1,15 @@
 import React from "react";
 import { SearchIcon } from "lucide-react";
-import { ProductsProps } from "@/services/productServices";
+import { Product } from "@/services/productService";
 
 interface SuggestionItemProps {
-  item: ProductsProps;
+  item: Product;
   onClick: (title: string) => void;
 }
 
-const SuggestionItem = ({ 
-  item, 
-  onClick 
+const SuggestionItem = ({
+  item,
+  onClick
 }: SuggestionItemProps) => (
   <button
     onClick={() => onClick(item.title)}
