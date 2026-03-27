@@ -26,7 +26,6 @@ const register = async (req, res) => {
             .insert([{ username, email, password: hashpass }]);
 
         insertError ? res.status(400).json({ error: insertError.message }) : res.status(201).json({ data })
-
     } catch (err) {
 
         return res.status(500).json({ error: err.message })
@@ -36,6 +35,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
+        const userID = req.client.id
         const { email, password } = req.body
 
         if (!email || !password) return res.status(400).json({ error: "All fields are required" })
@@ -73,8 +73,6 @@ const login = async (req, res) => {
             maxAge: 30 * 24 * 60 * 60 * 1000,
             path: "/"
         })
-
-
         return res.status(200).json({
             message: "Success Login",
             user: { username: data.username, email: data.email, id: data.id }

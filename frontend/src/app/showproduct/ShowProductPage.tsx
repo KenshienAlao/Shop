@@ -18,7 +18,7 @@ export default function ShowProductPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const productId = searchParams.get("id");
-  
+
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -122,67 +122,67 @@ export default function ShowProductPage() {
         {/* Global Body Container */}
         <main className="mx-auto w-full max-w-4xl flex-1 md:py-6">
           <div className="flex flex-col md:flex-row gap-6">
-            
+
             {/* Left: Image Section */}
             <div className="w-full md:w-1/2">
-                <div
-                    className="relative aspect-square w-full cursor-zoom-in overflow-hidden bg-white shadow-sm md:rounded-2xl"
-                    onClick={() => setIsLightboxOpen(true)}
-                >
-                    <img
-                        src={selectedImage ?? currentProduct.thumbnail}
-                        alt={currentProduct.title}
-                        className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
-                    />
-                    {currentProduct.discountPercentage > 0 && (
-                        <div className="bg-red-500 absolute top-4 left-0 rounded-r-lg px-3 py-1.5 text-xs font-black text-white shadow-lg">
-                            -{Math.round(currentProduct.discountPercentage)}% OFF
-                        </div>
-                    )}
-                    <div className="absolute right-4 bottom-4 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1.5 text-[10px] font-bold text-white backdrop-blur-md">
-                        <ZoomIn size={14} />
-                        TAP TO ZOOM
-                    </div>
+              <div
+                className="relative aspect-square w-full cursor-zoom-in overflow-hidden bg-white shadow-sm md:rounded-2xl"
+                onClick={() => setIsLightboxOpen(true)}
+              >
+                <img
+                  src={selectedImage ?? currentProduct.thumbnail}
+                  alt={currentProduct.title}
+                  className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
+                />
+                {currentProduct.discountPercentage > 0 && (
+                  <div className="bg-red-500 absolute top-4 left-0 rounded-r-lg px-3 py-1.5 text-xs font-black text-white shadow-lg">
+                    -{Math.round(currentProduct.discountPercentage)}% OFF
+                  </div>
+                )}
+                <div className="absolute right-4 bottom-4 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1.5 text-[10px] font-bold text-white backdrop-blur-md">
+                  <ZoomIn size={14} />
+                  TAP TO ZOOM
                 </div>
+              </div>
             </div>
 
             {/* Right: Product Detail Section */}
             <div className="flex-1 space-y-4 px-4 md:px-0">
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-                    <div className="flex items-center gap-3">
-                        <span className="text-accent text-3xl font-black">
-                            ${currentProduct.price.toFixed(2)}
-                        </span>
-                        <span className="bg-red-100 text-red-600 rounded-full px-2.5 py-1 text-[11px] font-bold">
-                            SALE
-                        </span>
-                    </div>
-
-                    <h1 className="mt-4 text-xl font-bold leading-tight text-gray-900">
-                        {currentProduct.title}
-                    </h1>
-                    
-                    <div className="mt-4 flex items-center gap-2">
-                        <div className="flex items-center gap-1.5 rounded-lg bg-orange-50 px-3 py-1.5 border border-orange-100">
-                            <span className="h-2 w-2 rounded-full bg-orange-500 animate-pulse" />
-                            <span className="text-[11px] font-bold text-orange-700 uppercase tracking-wider">
-                                IN STOCK: {currentProduct.quantity}
-                            </span>
-                        </div>
-                    </div>
+              <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                <div className="flex items-center gap-3">
+                  <span className="text-accent text-3xl font-black">
+                    ${currentProduct.price.toFixed(2)}
+                  </span>
+                  <span className="bg-red-100 text-red-600 rounded-full px-2.5 py-1 text-[11px] font-bold">
+                    SALE
+                  </span>
                 </div>
 
-                <div className="flex items-center gap-4 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-                    <div className="bg-accent/10 p-3 rounded-xl">
-                        <Truck className="text-accent" size={24} />
-                    </div>
-                    <div>
-                        <p className="text-sm font-bold text-gray-800">Premium Shipping</p>
-                        <p className="text-xs text-gray-500">
-                            Guaranteed delivery within 3–5 business days.
-                        </p>
-                    </div>
+                <h1 className="mt-4 text-xl font-bold leading-tight text-gray-900">
+                  {currentProduct.title}
+                </h1>
+
+                <div className="mt-4 flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 rounded-lg bg-orange-50 px-3 py-1.5 border border-orange-100">
+                    <span className="h-2 w-2 rounded-full bg-orange-500 animate-pulse" />
+                    <span className="text-[11px] font-bold text-orange-700 uppercase tracking-wider">
+                      IN STOCK: {currentProduct.quantity}
+                    </span>
+                  </div>
                 </div>
+              </div>
+
+              <div className="flex items-center gap-4 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div className="bg-accent/10 p-3 rounded-xl">
+                  <Truck className="text-accent" size={24} />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-gray-800">Premium Shipping</p>
+                  <p className="text-xs text-gray-500">
+                    Guaranteed delivery within 3–5 business days.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </main>

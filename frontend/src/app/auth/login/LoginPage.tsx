@@ -33,7 +33,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center bg-gray-50 px-6 py-12">
       <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-3xl shadow-xl shadow-black/5 border border-gray-100 animate-in fade-in zoom-in-95 duration-500">
-        
+
         {/* Header */}
         <div className="text-center">
           <div className="mx-auto h-16 w-16 bg-accent rounded-2xl flex items-center justify-center shadow-lg shadow-accent/20 mb-6">
@@ -75,7 +75,7 @@ export default function LoginPage() {
                   Password
                 </label>
                 <button type="button" className="text-xs font-bold text-accent hover:underline">
-                    Forgot?
+                  Forgot?
                 </button>
               </div>
               <div className="relative group">
@@ -111,8 +111,8 @@ export default function LoginPage() {
         <div className="text-center mt-8">
           <p className="text-sm font-medium text-gray-500">
             First time here?{" "}
-            <Link 
-              href="/auth/register" 
+            <Link
+              href="/auth/register"
               className="text-accent font-black hover:underline decoration-2 transition-all"
             >
               Create an account

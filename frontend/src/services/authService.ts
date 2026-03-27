@@ -1,3 +1,5 @@
+import { notifySuccess } from "@/utils/toast";
+
 export async function register(
   username: string,
   email: string,
@@ -21,7 +23,7 @@ export async function register(
     throw new Error(data.error);
   }
 
-  alert("Successfully Registered");
+  notifySuccess("Successfully Registered");
   return data;
 }
 
@@ -42,12 +44,12 @@ export async function login(email: string, password: string) {
       throw new Error(data.error);
     }
 
-    alert("Successfully Logged In");
+    notifySuccess("Successfully Logged In");
     return data;
-    } catch (err: unknown) {
-      const error = err as Error;
-      throw new Error(error.message);
-    }
+  } catch (err: unknown) {
+    const error = err as Error;
+    throw new Error(error.message);
+  }
 }
 
 export async function logout() {
@@ -56,4 +58,3 @@ export async function logout() {
     credentials: "include",
   });
 }
-

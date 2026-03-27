@@ -1,96 +1,183 @@
-import { CartProps, fetchToCart } from "@/services/cartService";
-import { getProducts, Product } from "@/services/productService";
-import { useEffect, useState } from "react";
-export default function CartPage() {
+import { useShowCart } from "@/hooks/useCart";
+import { CartProps } from "@/services/cartService";
+import { Product } from "@/services/productService";
+import { Trash2 } from "lucide-react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
-  const [currentCarts, setCurrentCarts] = useState<Product[]>([]);
-  const [cartItems, setCartItems] = useState<CartProps[]>([]);
-  const [total, setTotal] = useState<number>(0);
+const CartItem = memo(
+  ({
+    item,
+    product,
+    isChecked,
+    onToggle,
+  }: {
+    item: CartProps;
+    product: Product;
+    isChecked: boolean;
+    onToggle: (id: number) => void;
+  }) => (
+    <div
+      className={`group ${isChecked ? "bg-accent/5 ring-accent/20 ring-1" : "bg-white"} flex items-center gap-4 rounded-2xl border border-gray-100 p-4 shadow-sm transition-all hover:shadow-md`}
+    >
+      <input
+        type="checkbox"
+        checked={isChecked}
+        onChange={() => onToggle(item.id)}
+        className="text-accent h-5 w-5 cursor-pointer rounded-md border-2 border-gray-200"
+      />
+      <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-gray-50">
+        <img
+          src={product.thumbnail}
+          alt={product.title}
+          className="h-full w-full object-cover transition-transform group-hover:scale-110"
+        />
+      </div>
+      <div className="flex-1">
+        <div className="flex items-start justify-between">
+          <div>
+            <h3 className="line-clamp-1 text-lg font-bold text-gray-800">
+              {product.title}
+            </h3>
+            <p className="mt-1 text-xs font-semibold text-gray-400">
+              QTY: {item.qty}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-accent text-xl font-black">
+              ${product.price.toFixed(2)}
+            </p>
+            <p className="text-[10px] font-bold text-gray-400">
+              Total: ${(product.price * item.qty).toFixed(2)}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  ),
+);
 
+
+
+/**
+ * MAIN PAGE COMPONENT
+ */
+function CartPage() {
+  const { showCart, isLoading } = useShowCart();
+  const [data, setData] = useState<{
+    userCart: Product[];
+    cartItems: CartProps[];
+  } | null>(null);
+  const [checked, setChecked] = useState<number[]>([]);
   useEffect(() => {
-    const compateTheProductID = async () => {
-      try {
-        const [cartData, productData] = await Promise.all([
-          fetchToCart(),
-          getProducts()
-        ])
-        setTotal(cartData.cartItems.length);
-        const productID = cartData.cartItems.flatMap(i => i.product_id)
-        const product = productData.carts.flatMap(i => i.products)
-        const test = product.filter(i => productID.includes(i.id))
-        setCurrentCarts(test)
-        setCartItems(cartData.cartItems)
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    compateTheProductID();
-  }, [])
+    showCart().then(
+      (res) =>
+        res && setData({ userCart: res.userCart, cartItems: res.cartItems }),
+    );
+  }, [showCart]);
 
+  const enrichedItems = useMemo(
+    () =>
+      data?.cartItems
+        .map((item) => ({
+          item,
+          product: data.userCart.find((p) => p.id === item.product_id)!,
+        }))
+        .filter((i) => i.product) || [],
+    [data],
+  );
 
+  const checkedTotal = useMemo(
+    () =>
+      enrichedItems
+        .filter((i) => checked.includes(i.item.id))
+        .reduce((a, b) => a + b.product.price * b.item.qty, 0),
+    [checked, enrichedItems],
+  );
+  const toggleCheck = useCallback(
+    (id: number) =>
+      setChecked((p) =>
+        p.includes(id) ? p.filter((i) => i !== id) : [...p, id],
+      ),
+    [],
+  );
+
+  const toggleAll = () =>
+    setChecked(
+      checked.length === enrichedItems.length
+        ? []
+        : enrichedItems.map((i) => i.item.id),
+    );
 
   return (
-    <div className="flex w-full flex-col bg-gray-50 min-h-screen">
-      <div className="bg-accent sticky top-0 z-50 shadow-md">
-        <header className="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-3 md:px-8">
-          <h1 className="text-white text-xl font-bold mx-15">Shopping Cart <span className="text-white/80 text-xl font-light">({total})</span></h1>
-        </header>
-      </div>
-      <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-8 md:px-8">
-        <div className="space-y-4">
-          {cartItems.map((item, index) => {
-            const product = currentCarts.find((p) => p.id === item.product_id);
-            if (!product) return null;
+    <div className="flex min-h-screen flex-col bg-gray-50 pb-32">
+      <header className="bg-accent sticky top-0 z-50 flex justify-between p-5 px-8 text-white shadow-md">
+        <h1 className="text-xl font-bold">
+          Shopping Cart{" "}
+          <span className="font-light opacity-80">
+            ({enrichedItems.length})
+          </span>
+        </h1>
+        {checked.length > 0 && (
+          <button className="rounded-xl bg-white/20 p-2 transition-all hover:bg-red-500 active:scale-90">
+            <Trash2 size={20} />
+          </button>
+        )}
+      </header>
 
-            return (
-              <div
-                key={`${item.id}-${index}`}
-                className="group bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 transition-all hover:shadow-md"
-              >
-                <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-gray-50 shrink-0">
-                  <img
-                    src={product.thumbnail}
-                    alt={product.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                </div>
-
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-bold text-gray-800 text-lg line-clamp-1">{product.title}</h3>
-                      <p className="text-gray-400 text-xs mt-1 uppercase tracking-wider font-semibold">Quantity: {item.qty}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-accent text-xl font-black">${product.price.toFixed(2)}</p>
-                      <p className="text-gray-400 text-[10px] font-bold">Total: ${(product.price * item.qty).toFixed(2)}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-2 ml-4">
-                  <button className="p-2 text-gray-300 hover:text-red-500 transition-colors">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-
-          {cartItems.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-              <div className="mb-4 bg-white p-6 rounded-full shadow-inner">
-                <svg className="w-16 h-16 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-              </div>
-              <p className="font-medium">No items found in your cart.</p>
-            </div>
-          )}
-        </div>
+      <main className="mx-auto w-full max-w-5xl flex-1 space-y-4 p-8">
+        {isLoading ? (
+          <div className="animate-pulse space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-32 rounded-2xl bg-gray-200" />
+            ))}
+          </div>
+        ) : enrichedItems.length === 0 ? (
+          <p className="py-20 text-center text-gray-400">Your cart is empty.</p>
+        ) : (
+          enrichedItems.map((obj) => (
+            <CartItem
+              key={obj.item.id}
+              {...obj}
+              isChecked={checked.includes(obj.item.id)}
+              onToggle={toggleCheck}
+            />
+          ))
+        )}
       </main>
+      <footer className="fixed right-0 bottom-0 left-0 z-50 border-t bg-white/95 p-5 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-4">
+          <label className="flex cursor-pointer items-center gap-3 p-2">
+            <input
+              type="checkbox"
+              checked={
+                checked.length === enrichedItems.length &&
+                enrichedItems.length > 0
+              }
+              onChange={toggleAll}
+              className="h-5 w-5"
+            />
+            <span className="text-sm font-bold text-gray-500">SELECT ALL</span>
+          </label>
+          <div className="flex items-center gap-6">
+            <div className="text-right">
+              <p className="text-[10px] font-bold text-gray-400">
+                TOTAL AMOUNT
+              </p>
+              <p className="text-accent text-2xl font-black">
+                ${checkedTotal.toFixed(2)}
+              </p>
+            </div>
+            <button
+              disabled={checked.length === 0}
+              className="bg-accent h-14 rounded-2xl px-8 text-sm font-black text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
+            >
+              CHECK OUT ({checked.length})
+            </button>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
+
+export default memo(CartPage);

@@ -1,4 +1,5 @@
-import { Minus, Plus, X } from "lucide-react";
+import { Loader2, Minus, Plus, X } from "lucide-react";
+
 import { Product } from "@/services/productService";
 import { useState } from "react";
 import { useAddToCart } from "@/hooks/useCart";
@@ -9,34 +10,37 @@ interface AddToCartProps {
 }
 
 export default function AddToCart({ product, onClose }: AddToCartProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const { addToCart } = useAddToCart();
   const [quantity, setQuantity] = useState(1);
 
   const handleDecreaseQuantity = () => {
     if (quantity > 1) {
-        setQuantity((prev) => prev - 1);
+      setQuantity((prev) => prev - 1);
     }
   };
 
   const handleIncreaseQuantity = () => {
     if (quantity < product.quantity) {
-        setQuantity((prev) => prev + 1);
+      setQuantity((prev) => prev + 1);
     }
   };
 
-  const handleAddToCartConfirm = () => {
-    addToCart(product.id, quantity);
+  const handleAddToCartConfirm = async () => {
+    setIsLoading(true);
+    await addToCart(product.id, quantity);
+    setIsLoading(false);
     onClose();
   };
 
   return (
     <div className="animate-fade-in fixed inset-0 z-100 flex items-end justify-center bg-black/60 shadow-[0_0_40px_rgba(0,0,0,0.4)] backdrop-blur-[2px]">
       <div className="absolute inset-0" onClick={onClose} />
-      
+
       <div className="animate-slide-up relative w-full max-w-2xl transform rounded-t-[2.5rem] border-t border-gray-100 bg-white px-5 pt-8 pb-10 shadow-2xl">
         {/* Handle for drawer aesthetic */}
         <div className="absolute top-3 left-1/2 h-1.5 w-12 -translate-x-1/2 rounded-full bg-gray-200" />
-        
+
         <button
           onClick={onClose}
           className="absolute top-5 right-5 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 text-gray-400 transition-all hover:bg-gray-100 hover:text-gray-600 active:scale-90"
@@ -110,7 +114,14 @@ export default function AddToCart({ product, onClose }: AddToCartProps) {
               id="confirm-add-to-cart"
               className="bg-accent flex w-full items-center justify-center gap-3 rounded-[1.25rem] py-5 text-base font-black text-white shadow-[0_10px_20px_rgba(245,74,0,0.3)] transition-all hover:opacity-95 active:scale-[0.98]"
             >
-              <span>Add to Cart</span>
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-5 w-5 animate-spin text-white" />
+                </div>
+              ) : (
+                <span>Add to Cart</span>
+              )}
+
             </button>
           </div>
         </div>

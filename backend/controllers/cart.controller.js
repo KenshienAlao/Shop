@@ -1,5 +1,4 @@
 const supabase = require("../config/db")
-
 const addToCart = async (req, res) => {
     try {
         const userID = req.client.id
@@ -20,9 +19,6 @@ const addToCart = async (req, res) => {
                 .single()
             user = newUser;
         }
-
-        if (!user) return res.status(404).json({ error: "User not found" })
-
         const { data: productExist } = await supabase
             .from("cart_item")
             .select("*")
@@ -42,11 +38,25 @@ const addToCart = async (req, res) => {
         return res.status(500).json({ error: err.message })
     }
 }
-
-
 const fetchCart = async (req, res) => {
     try {
         const userID = req.client.id
+        if (!userID) return res.status(400).json({ error: "User not found" })
+        let { data: user } = await supabase
+            .from("cart")
+            .select("*")
+            .eq("user_id", userID)
+            .maybeSingle()
+
+        if (!user) {
+            const { data: newUser } = await supabase
+                .from("cart")
+                .insert({ user_id: userID })
+                .select()
+                .single()
+            user = newUser;
+        }
+
         const { data: exist } = await supabase
             .from("cart")
             .select("*")
@@ -60,6 +70,8 @@ const fetchCart = async (req, res) => {
 
             return res.status(200).json({ cartItems })
         }
+
+        return res.status(404).json({ error: "Cart not found" })
     } catch (err) {
         return res.status(500).json({ error: err.message })
     }

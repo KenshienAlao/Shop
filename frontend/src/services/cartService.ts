@@ -13,9 +13,8 @@ export async function addToCart(productId: number, quantity: number) {
 
   const data = await res.json();
 
-  if (!res.ok) {
-    notifyFailed("Something went wrong...");
-  }
+  if (!res.ok) throw new Error(data.error);
+
   return data;
 }
 
@@ -39,9 +38,7 @@ export async function fetchToCart(): Promise<FetchToCartProps> {
     },
   );
 
-  if (!res.ok) {
-    notifyFailed("Something went wrong...");
-  }
+  if (!res.ok) throw new Error("Failed to fetch cart");
   const data = await res.json();
 
   return data;

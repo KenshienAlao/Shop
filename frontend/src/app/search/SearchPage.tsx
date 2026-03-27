@@ -68,7 +68,7 @@ function SearchPage() {
     const filteredSuggestions = useMemo(() => {
         const normalizedQuery = searchTerm.trim().toLowerCase();
         if (!normalizedQuery) return [];
-        
+
         return products.filter((p) =>
             p.title.toLowerCase().includes(normalizedQuery)
         );
@@ -81,7 +81,7 @@ function SearchPage() {
     const performSearch = useCallback((query: string) => {
         const finalizedQuery = query.trim();
         if (!finalizedQuery) return;
-        
+
         const encodedQuery = encodeURIComponent(finalizedQuery);
         router.push(`/product?search_query=${encodedQuery}`);
         saveSearchQuery(finalizedQuery);
@@ -142,26 +142,34 @@ function SearchPage() {
 
             <main className="container mx-auto p-4 max-w-2xl">
                 {/* Search History Section */}
-                {searchHistory.length > 0 && !searchTerm && (
+                {(isLoading || searchHistory.length > 0) && !searchTerm && (
                     <section className="animate-in fade-in slide-in-from-top-2 duration-300">
                         <div className="flex items-center justify-between mb-4 px-1">
                             <h2 className="text-xs font-bold text-gray-500 uppercase tracking-widest">Search History</h2>
-                            <button
-                                onClick={handleClearAllHistory}
-                                className="text-xs text-accent font-semibold hover:underline decoration-2"
-                            >
-                                Clear All
-                            </button>
+                            {!isLoading && (
+                                <button
+                                    onClick={handleClearAllHistory}
+                                    className="text-xs text-accent font-semibold hover:underline decoration-2"
+                                >
+                                    Clear All
+                                </button>
+                            )}
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            {searchHistory.map((item, idx) => (
-                                <RecentSearchChip
-                                    key={`history-${idx}`}
-                                    item={item}
-                                    onSearch={performSearch}
-                                    onRemove={handleRemoveHistoryItem}
-                                />
-                            ))}
+                            {isLoading ? (
+                                [1, 2, 3].map((i) => (
+                                    <div key={i} className="h-8 w-24 bg-gray-200 rounded-full animate-pulse" />
+                                ))
+                            ) : (
+                                searchHistory.map((item, idx) => (
+                                    <RecentSearchChip
+                                        key={`history-${idx}`}
+                                        item={item}
+                                        onSearch={performSearch}
+                                        onRemove={handleRemoveHistoryItem}
+                                    />
+                                ))
+                            )}
                         </div>
                     </section>
                 )}
@@ -170,9 +178,16 @@ function SearchPage() {
                 {searchTerm.trim() && (
                     <section className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden divide-y divide-gray-50">
                         {isLoading ? (
-                            <div className="p-12 flex flex-col items-center justify-center text-gray-400 gap-3">
-                                <Loader2 className="animate-spin" size={32} />
-                                <p className="text-sm">Finding products...</p>
+                            <div className="flex flex-col">
+                                {[1, 2, 3, 4].map((i) => (
+                                    <div key={i} className="flex gap-4 p-4 animate-pulse">
+                                        <div className="h-12 w-12 bg-gray-200 rounded-lg shrink-0" />
+                                        <div className="flex-1 space-y-2 py-1">
+                                            <div className="h-4 bg-gray-200 rounded w-3/4" />
+                                            <div className="h-3 bg-gray-200 rounded w-1/4" />
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         ) : filteredSuggestions.length > 0 ? (
                             filteredSuggestions.map((product, index) => (
@@ -191,6 +206,7 @@ function SearchPage() {
                     </section>
                 )}
             </main>
+
         </div>
     );
 }
