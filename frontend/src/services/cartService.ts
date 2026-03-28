@@ -1,13 +1,46 @@
 import { notifyFailed } from "@/utils/toast";
 import { fetchWithAuth } from "./apiClient";
 
-export async function addToCart(productId: number, quantity: number) {
+export async function addCartService(productId: number, quantity: number) {
   const res = await fetchWithAuth(
     `${process.env.NEXT_PUBLIC_API_URL_CART}/add-to-cart/${productId}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ Productqty: quantity }),
+    },
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) throw new Error(data.error);
+
+  return data;
+}
+
+export async function deleteCartsService(productID: number[]) {
+  const res = await fetchWithAuth(
+    `${process.env.NEXT_PUBLIC_API_URL_CART}/delete-cart/${productID}`,
+    {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    },
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) throw new Error(data.error);
+
+  return data;
+}
+
+export async function updateCartService(productID: number, quantity: number) {
+  const res = await fetchWithAuth(
+    `${process.env.NEXT_PUBLIC_API_URL_CART}/update-cart/${productID}`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ qty: quantity }),
     },
   );
 
