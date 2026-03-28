@@ -34,7 +34,20 @@ const refresh = async (req, res) => {
         return res.status(200).json({ message: "Success Refresh" })
 
     } catch (err) {
-        return res.status(500).json({ error: err.message })
+        const isProduction = process.env.NODE_ENV === "production";
+        res.clearCookie("access_token", {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            path: "/"
+        });
+        res.clearCookie("refresh_token", {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            path: "/"
+        });
+        return res.status(401).json({ error: "Refresh token expired or invalid" })
     }
 }
 

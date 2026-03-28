@@ -35,12 +35,12 @@ export async function loginService(email: string, password: string) {
       }),
     });
     const data = await res.json();
-
     if (!res.ok) {
       throw new Error(data.error);
     }
+    localStorage.setItem("is_logged_in", "true");
     return data;
-  } catch (err: unknown) {
+    } catch (err: unknown) {
     const error = err as Error;
     throw new Error(error.message);
   }
@@ -56,5 +56,6 @@ export async function logoutService() {
   if (!res.ok) {
     throw new Error(data.error);
   }
+  localStorage.removeItem("is_logged_in");
   return data;
 }

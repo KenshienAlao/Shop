@@ -51,7 +51,9 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
   }, [router]);
 
   useEffect(() => {
-    if (!isAuthPage) {
+    const isLoggedIn = typeof window !== "undefined" && localStorage.getItem("is_logged_in") === "true";
+
+    if (isLoggedIn && !isAuthPage) {
       handleFetchProfile();
     } else {
       setIsLoading(false);

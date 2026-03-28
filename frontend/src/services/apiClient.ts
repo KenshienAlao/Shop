@@ -17,6 +17,8 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
 
     if (refreshRes.ok) {
       res = await fetch(url, defaultOptions);
+    } else {
+      localStorage.removeItem("is_logged_in");
     }
   }
 
