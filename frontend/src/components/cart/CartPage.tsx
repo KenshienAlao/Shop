@@ -10,7 +10,6 @@ function CartPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [currentCarts, setCurrentCarts] = useState<Product[]>([]);
   const [cartItems, setCartItems] = useState<CartProps[]>([]);
-  const [total, setTotal] = useState<number>(0);
   const [checked, setChecked] = useState<number[]>([]);
   const { showCart } = useShowCart();
   const { deleteCart } = useDeleteCart();
@@ -21,10 +20,9 @@ function CartPage() {
       setIsLoading(true);
       const result = await showCart();
       if (result) {
-        const { userCart, total, cartItems } = result;
+        const { userCart, cartItems } = result;
         setCurrentCarts(userCart);
         setCartItems(cartItems);
-        setTotal(total);
       }
     } catch (error: any) {
       notifyFailed(error.message);
@@ -44,6 +42,16 @@ function CartPage() {
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   }, []);
+  
+  const updateLocalQty = useCallback((productId: number, newQty: number) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.product_id === productId ? { ...item, qty: newQty } : item,
+      ),
+    );
+  }, []);
+
+  const total = useMemo(() => cartItems.length, [cartItems]);
 
   const toggleAll = useCallback(() => {
     if (cartItems.length === 0) return;
@@ -123,6 +131,7 @@ function CartPage() {
                 <CartPreview
                   key={item.id}
                   item={item}
+                  onUpdateQty={updateLocalQty}
                   toggleCheck={toggleCheck}
                   product={product}
                   isChecked={checked.includes(item.product_id)}

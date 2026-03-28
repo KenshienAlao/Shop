@@ -8,12 +8,13 @@ import { memo, useCallback, useEffect, useState } from "react";
 interface CartItemProps {
     item: CartProps;
     toggleCheck: (id: number) => void;
+    onUpdateQty: (productId: number, newQty: number) => void;
     product: Product;
     isChecked: boolean;
 }
 
 export const CartPreview = memo(
-    ({ item, toggleCheck, product, isChecked }: CartItemProps) => {
+    ({ item, toggleCheck, product, isChecked, onUpdateQty }: CartItemProps) => {
         const [isEdit, setIsEdit] = useState(false)
         const { updateCart } = useUpdateCart(item.product_id, item.qty);
         const [qty, setQty] = useState<number>(item.qty);
@@ -39,9 +40,10 @@ export const CartPreview = memo(
         useEffect(() => {
             if (isEdit) {
                 updateQty()
+                onUpdateQty(item.product_id, qty)
                 setIsEdit(false)
             }
-        }, [updateQty])
+        }, [updateQty, onUpdateQty, item.product_id, qty])
 
         return (
             <div
