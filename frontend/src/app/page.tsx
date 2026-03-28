@@ -5,7 +5,7 @@ import { useEffect } from "react";
 export default function Start() {
   const router = useRouter()
   useEffect(() => {
-    router.replace("/dashboard")
+    router.push("/auth?tab=login")
   }, [router])
   return null;
 

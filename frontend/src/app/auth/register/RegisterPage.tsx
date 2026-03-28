@@ -1,10 +1,11 @@
 "use client";
 
-import { register } from "@/services/authService";
+import { useRegister } from "@/hooks/useAuth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { User, Mail, Lock, UserPlus, Loader2 } from "lucide-react";
+import { notifyFailed } from "@/utils/toast";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState<string>("");
@@ -12,6 +13,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { register } = useRegister()
   const router = useRouter();
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -23,7 +25,7 @@ export default function RegisterPage() {
       await register(username, email, password, confirmPassword);
       router.replace("/auth/login");
     } catch (err: any) {
-      console.error("[RegisterPage] Registration failed:", err);
+      notifyFailed(err.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -32,7 +34,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center bg-gray-50 px-6 py-12">
       <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-3xl shadow-xl shadow-black/5 border border-gray-100 animate-in fade-in zoom-in-95 duration-500">
-        
+
         {/* Header */}
         <div className="text-center">
           <div className="mx-auto h-16 w-16 bg-accent rounded-2xl flex items-center justify-center shadow-lg shadow-accent/20 mb-6">
@@ -145,8 +147,8 @@ export default function RegisterPage() {
         <div className="text-center mt-8">
           <p className="text-sm font-medium text-gray-500">
             Already have an account?{" "}
-            <Link 
-              href="/auth/login" 
+            <Link
+              href="/auth/login"
               className="text-accent font-black hover:underline decoration-2 transition-all"
             >
               Sign in here

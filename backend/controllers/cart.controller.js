@@ -105,8 +105,6 @@ const deleteCart = async (req, res) => {
     }
 }
 
-// updateCart(update the qty by using the confirm button, and also add a confirm button for the delete button
-
 const updateCart = async (req, res) => {
     try {
         const userID = req.client.id

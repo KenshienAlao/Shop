@@ -25,7 +25,7 @@ const register = async (req, res) => {
             .from("users")
             .insert([{ username, email, password: hashpass }]);
 
-        insertError ? res.status(400).json({ error: insertError.message }) : res.status(201).json({ data })
+        insertError ? res.status(400).json({ error: insertError.message }) : res.status(201).json({ message: "Success Register" })
     } catch (err) {
 
         return res.status(500).json({ error: err.message })
@@ -35,22 +35,15 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const userID = req.client.id
         const { email, password } = req.body
-
         if (!email || !password) return res.status(400).json({ error: "All fields are required" })
-
         const { data, error } = await supabase
             .from("users")
             .select("id, username, email, password")
             .eq("email", email)
             .single()
-
-        if (error) return res.status(400).json({ error: "Email don't exist" })
-
+        if (error) return res.status(400).json({ error: error.message })
         const isMatch = await bcrypt.compare(password, data.password)
-
-
         if (!isMatch) return res.status(400).json({ error: "Password do not match" })
 
         const accessToken = jwt.sign({ id: data.id, username: data.username, email: data.email }, process.env.JWT_SECRET, { expiresIn: "15m" })

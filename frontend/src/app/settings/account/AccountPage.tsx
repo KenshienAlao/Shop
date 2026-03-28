@@ -1,7 +1,8 @@
 "use client";
 
 import { useProfile } from "@/contexts/ProfileContext";
-import { logout } from "@/services/authService";
+import { useLogout } from "@/hooks/useAuth";
+import { notifyFailed } from "@/utils/toast";
 import { ArrowLeft, User, Shield, ChevronRight, LogOut, Mail } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,6 +10,7 @@ import { useRouter } from "next/navigation";
 export default function AccountPage() {
     const { username, email, clearProfile } = useProfile();
     const router = useRouter();
+    const { logout } = useLogout();
 
     interface AccountSectionItem {
         label: string;
@@ -61,7 +63,7 @@ export default function AccountPage() {
             clearProfile();
             router.replace("/auth/login");
         } catch (err: any) {
-            console.error("[AccountPage] Logout failed:", err);
+            notifyFailed(err.message);
         }
     };
 
@@ -70,7 +72,7 @@ export default function AccountPage() {
             {/* Header */}
             <div className="bg-white border-b border-gray-100 sticky top-0 z-50">
                 <div className="max-w-3xl mx-auto flex items-center gap-4 px-5 py-4">
-                    <Link 
+                    <Link
                         href="/dashboard"
                         className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                     >
@@ -91,7 +93,7 @@ export default function AccountPage() {
                                 {section.title}
                             </h2>
                         </div>
-                        
+
                         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
                             {section.items.map((item, index) => (
                                 <div key={item.label}>

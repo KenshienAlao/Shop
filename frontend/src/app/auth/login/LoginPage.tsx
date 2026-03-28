@@ -1,17 +1,18 @@
 "use client";
-
-import { login } from "@/services/authService";
 import { useProfile } from "@/contexts/ProfileContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Mail, Lock, LogIn, Loader2 } from "lucide-react";
+import { notifyFailed } from "@/utils/toast";
+import { useLogin } from "@/hooks/useAuth";
 
 export default function LoginPage() {
   const { refreshProfile } = useProfile();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { login } = useLogin();
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -24,7 +25,7 @@ export default function LoginPage() {
       await refreshProfile();
       router.replace("/dashboard");
     } catch (err: any) {
-      console.error("[LoginPage] Login failed:", err);
+      notifyFailed(err.message);
     } finally {
       setIsSubmitting(false);
     }

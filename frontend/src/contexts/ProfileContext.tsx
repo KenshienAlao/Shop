@@ -10,7 +10,7 @@ import React, {
   ReactNode,
 } from "react";
 import { getProfile } from "@/services/profileService";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 interface UserProfile {
   username: string;
@@ -29,6 +29,9 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<UserProfile>({ username: "", email: "" });
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
+
+  const isAuthPage = useMemo(() => pathname.startsWith("/auth"), [pathname]);
 
   const handleFetchProfile = useCallback(async () => {
     setIsLoading(true);
@@ -37,19 +40,23 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       if (data) {
         setProfile({ username: data.username, email: data.email });
       } else {
-        router.push("/auth/login");
+        router.replace("/auth/login");
       }
     } catch (err: any) {
       console.error("[ProfileContext] Fetch error:", err);
-      router.push("/auth/login");
+      router.replace("/auth/login");
     } finally {
       setIsLoading(false);
     }
   }, [router]);
 
   useEffect(() => {
-    handleFetchProfile();
-  }, [handleFetchProfile]);
+    if (!isAuthPage) {
+      handleFetchProfile();
+    } else {
+      setIsLoading(false);
+    }
+  }, [handleFetchProfile, isAuthPage]);
 
   const clearProfile = useCallback(() => {
     setProfile({ username: "", email: "" });

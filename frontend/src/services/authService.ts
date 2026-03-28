@@ -1,6 +1,4 @@
-import { notifySuccess } from "@/utils/toast";
-
-export async function register(
+export async function registerService(
   username: string,
   email: string,
   password: string,
@@ -22,12 +20,10 @@ export async function register(
   if (!res.ok) {
     throw new Error(data.error);
   }
-
-  notifySuccess("Successfully Registered");
   return data;
 }
 
-export async function login(email: string, password: string) {
+export async function loginService(email: string, password: string) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_AUTH}/login`, {
       method: "POST",
@@ -43,8 +39,6 @@ export async function login(email: string, password: string) {
     if (!res.ok) {
       throw new Error(data.error);
     }
-
-    notifySuccess("Successfully Logged In");
     return data;
   } catch (err: unknown) {
     const error = err as Error;
@@ -52,9 +46,15 @@ export async function login(email: string, password: string) {
   }
 }
 
-export async function logout() {
-  await fetch(`${process.env.NEXT_PUBLIC_API_URL_AUTH}/logout`, {
+export async function logoutService() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_AUTH}/logout`, {
     method: "POST",
     credentials: "include",
   });
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error);
+  }
+  return data;
 }
