@@ -39,7 +39,7 @@ export function useUpdateCart(productId: number, quantity: number) {
     async (productId: number, quantity: number) => {
       try {
         const res = await updateCartService(productId, quantity);
-        notifySuccess(res.message);
+        // notifySuccess(res.message);
       } catch (err: any) {
         notifyFailed(err.message);
       }
